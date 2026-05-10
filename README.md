@@ -5,6 +5,7 @@
 ![Status](https://img.shields.io/badge/status-active-brightgreen)
 ![Payloads](https://img.shields.io/badge/payloads-1853-orange)
 ![Modules](https://img.shields.io/badge/vuln--modules-14-red)
+![Architecture](https://img.shields.io/badge/architecture-modular-blueviolet)
 
 > Advanced Offensive Security Framework with Modular Governance, Resilience Engineering, Confidence Scoring, and Professional Reporting.
 
@@ -13,196 +14,323 @@
 ## ⚠️ Disclaimer
 
 This framework is intended **ONLY** for:
-- Authorized penetration testing
-- Bug bounty programs with written scope permission
-- Security research in controlled environments
-- Educational and lab environments
+
+* Authorized penetration testing
+* Bug bounty programs with written scope permission
+* Security research in controlled environments
+* Educational and lab environments
 
 **Unauthorized testing against systems without explicit permission is strictly prohibited. The author is not responsible for any misuse of this tool. Always obtain written permission before testing any target.**
 
 ---
 
-## Overview
+# Overview
 
-BugHunter AI Elite is a professionally engineered offensive security framework built for vulnerability assessment, bug bounty workflows, and controlled penetration testing.
+BugHunter AI Elite is a professionally engineered offensive security framework built for:
+
+* Vulnerability assessment
+* Bug bounty workflows
+* Security research
+* Controlled penetration testing
+* Educational experimentation
+* Validation-focused offensive testing
 
 Unlike traditional scanners that rely on static payload dumping, BugHunter AI Elite uses:
 
-- **RAG-guided detection logic** — rules-based brain, not just dumb payload spraying
-- **Structured payload abstraction** — 1853 payloads across 14 modules with lineage tracking
-- **Centralized execution governance** — throttling, retries, concurrency control
-- **Mode-based safety enforcement** — `bb-mode`, `aggressive`, `lab-mode`
-- **Multi-signal confidence scoring** — drastically reduces false positives
-- **Resilience and observability systems** — circuit breakers, structured logging, tracing
-- **Modular routing and orchestration** — dependency-aware execution engine
+* **RAG-guided detection logic** — rules-based intelligence instead of blind payload spraying
+* **Structured payload abstraction** — 1853 payloads across 14 modules with metadata and lineage tracking
+* **Centralized execution governance** — throttling, retries, concurrency control, adaptive backoff
+* **Mode-based safety enforcement** — `bb-mode`, `aggressive`, `lab-mode`
+* **Multi-signal confidence scoring** — reduces false positives through layered validation
+* **Resilience and observability systems** — structured logging, tracing, circuit breakers
+* **Modular routing and orchestration** — dependency-aware execution engine
 
 ---
 
-## Architecture
+# High-Level Workflow
 
+```text id="y1dy71"
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         BUGHUNTER AI ELITE                                 │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  ┌───────────────────────────────────────────────────────────────────────┐ │
+│  │                    EXECUTION CONTROLLER                              │ │
+│  │   Rate limiting, throttling, retries, concurrency governance         │ │
+│  └───────────────────────────────────────────────────────────────────────┘ │
+│                                   │                                         │
+│                                   ▼                                         │
+│  ┌───────────────────────────────────────────────────────────────────────┐ │
+│  │                    RAG KNOWLEDGE LAYER                               │ │
+│  │  56 detection files + 14 payload modules                             │ │
+│  │  XSS, SQLi, SSRF, XXE, SSTI, JWT, IDOR, CSRF, etc.                   │ │
+│  └───────────────────────────────────────────────────────────────────────┘ │
+│                                   │                                         │
+│                                   ▼                                         │
+│  ┌───────────────────────────────────────────────────────────────────────┐ │
+│  │                    CORE DETECTION MODULES                            │ │
+│  │  AdvancedDetection, LogicEngine, HeuristicEngine, MutationEngine     │ │
+│  └───────────────────────────────────────────────────────────────────────┘ │
+│                                   │                                         │
+│                                   ▼                                         │
+│                        ┌───────────────────────┐                            │
+│                        │   VALIDATION LAYER   │                            │
+│                        │ Confidence Scoring   │                            │
+│                        │ False Positive Reduction                           │
+│                        └───────────────────────┘                            │
+│                                   │                                         │
+│                                   ▼                                         │
+│  ┌───────────────────────────────────────────────────────────────────────┐ │
+│  │                    ATTACK FLOW ENGINE                                │ │
+│  │ Adaptive orchestration, escalation chains, validation-aware flows    │ │
+│  └───────────────────────────────────────────────────────────────────────┘ │
+│                                   │                                         │
+│                                   ▼                                         │
+│  ┌───────────────────────────────────────────────────────────────────────┐ │
+│  │                    LEARNING SYSTEM                                   │ │
+│  │ AdaptiveLearning, ConfidenceEngine, Payload Prioritization           │ │
+│  └───────────────────────────────────────────────────────────────────────┘ │
+│                                   │                                         │
+│                                   ▼                                         │
+│  ┌───────────────────────────────────────────────────────────────────────┐ │
+│  │                    CHAIN ENGINE                                      │ │
+│  │ Multi-step attack path reasoning and impact analysis                 │ │
+│  └───────────────────────────────────────────────────────────────────────┘ │
+│                                   │                                         │
+│                                   ▼                                         │
+│  ┌───────────────────────────────────────────────────────────────────────┐ │
+│  │                          OUTPUT                                      │ │
+│  │ JSON Reports, Markdown Reports, Console UI, Evidence Correlation     │ │
+│  └───────────────────────────────────────────────────────────────────────┘ │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
 ```
+
+---
+
+# Architecture
+
+```text id="5j4zq9"
 BugHunter AI Elite
 │
 ├── Payload Layer
-│   ├── payload_loader.py         1853 payloads, 14 modules
-│   ├── payload metadata          classification, lineage tracking
-│   └── safe/dangerous separation per execution mode
+│   ├── payload_loader.py
+│   ├── payload metadata
+│   └── payload lineage tracking
 │
 ├── Execution Layer
-│   ├── execution_controller.py   centralized async execution
-│   ├── throttling + retries
+│   ├── execution_controller.py
+│   ├── retries + throttling
 │   └── concurrency governance
 │
 ├── Routing Layer
-│   ├── module_router.py          dependency-aware orchestration
-│   ├── execution eligibility checks
-│   └── risk-level governance
+│   ├── module_router.py
+│   ├── dependency orchestration
+│   └── execution eligibility
 │
 ├── Governance Layer
 │   ├── mode_manager.py
-│   ├── bb-mode                   safe bug bounty testing
-│   ├── aggressive                advanced controlled testing
-│   └── lab-mode                  unrestricted educational testing
-│
-├── RAG Brain Layer
-│   ├── rag_loader.py             loads and parses RAG knowledge files
-│   ├── rag_integration.py        bridges RAG rules → scanner
-│   └── /rag/*.txt                decision rules, detection logic, learning
+│   ├── bb-mode
+│   ├── aggressive mode
+│   └── lab-mode
 │
 ├── Observability Layer
-│   ├── logger_manager.py         structured JSON logging
-│   ├── correlation IDs + tracing
-│   └── scan lifecycle tracking
+│   ├── logger_manager.py
+│   ├── structured tracing
+│   └── execution visibility
 │
 ├── Resilience Layer
 │   ├── resilience_manager.py
-│   ├── circuit breaker support
-│   └── WAF throttling detection + adaptive backoff
+│   ├── circuit breakers
+│   └── adaptive recovery
 │
 ├── Confidence Layer
-│   ├── confidence_engine.py      multi-signal false-positive reduction
+│   ├── confidence_engine.py
 │   ├── context-aware validation
-│   └── confidence classification (informational → verified)
+│   └── false-positive reduction
 │
 └── Reporting Layer
     ├── reporting_engine.py
-    ├── JSON + Markdown reports
-    └── CWE mapping, evidence tracking, remediation guidance
+    ├── evidence correlation
+    └── remediation guidance
 ```
 
 ---
 
-## Supported Vulnerability Modules
+# Project Structure
 
-| Module | Payloads | RAG Brain | Dedicated Detector |
-|--------|----------|-----------|-------------------|
-| XSS | ✅ | ✅ | ✅ |
-| SQL Injection | ✅ | ✅ | ✅ |
-| SSRF | ✅ | ✅ | ✅ |
-| XXE | ✅ | ✅ | ✅ |
-| SSTI | ✅ | ✅ | ✅ |
-| JWT Issues | ✅ | ✅ | ✅ |
-| IDOR | ✅ | ✅ | ✅ |
-| Command Injection | ✅ | ✅ | ✅ |
-| CSRF | ✅ | ✅ | ✅ |
-| Open Redirect | ✅ | ✅ | ✅ |
-| Path Traversal | ✅ | ✅ | ✅ |
-| Deserialization | ✅ | ✅ | ✅ |
-| Race Conditions | ✅ | ✅ | ✅ |
-| GraphQL | ✅ | ✅ | ✅ |
+```text id="n0tnlb"
+BugHunter AI Elite
+│
+├── modules/
+│   ├── adaptive_learning.py
+│   ├── advanced_detection.py
+│   ├── ai_engine.py
+│   ├── ai_planner.py
+│   ├── attack_flow_engine.py
+│   ├── confidence_engine.py
+│   ├── execution_controller.py
+│   ├── logger_manager.py
+│   ├── mode_manager.py
+│   ├── module_router.py
+│   ├── payload_loader.py
+│   ├── reporting_engine.py
+│   ├── resilience_manager.py
+│   ├── vuln_validator.py
+│   └── ... additional framework modules
+│
+├── payloads/
+│   ├── Command Injection
+│   ├── CSRF Payloads
+│   ├── SQLi Payloads
+│   ├── SSRF Payloads
+│   ├── XSS Payloads
+│   └── ... additional payload modules
+│
+├── rag/
+│   └── 56 structured RAG knowledge files
+│
+├── output/
+│   └── generated reports and scan artifacts
+│
+├── bughunter.py
+├── config.json
+├── config-test.json
+├── knowledge_base.json
+├── learning-db.json
+├── payloads.json
+├── requirements.txt
+└── test-app/
+```
 
 ---
 
-## Installation
+# Supported Vulnerability Modules
 
-**Clone the repository:**
-```bash
+| Module            | Payload Support | Validation Support |
+| ----------------- | --------------- | ------------------ |
+| XSS               | ✅               | ✅                  |
+| SQL Injection     | ✅               | ✅                  |
+| SSRF              | ✅               | ✅                  |
+| XXE               | ✅               | ✅                  |
+| SSTI              | ✅               | ✅                  |
+| JWT Issues        | ✅               | ✅                  |
+| IDOR              | ✅               | ✅                  |
+| Command Injection | ✅               | ✅                  |
+| CSRF              | ✅               | ✅                  |
+| Open Redirect     | ✅               | ✅                  |
+| Path Traversal    | ✅               | ✅                  |
+| Deserialization   | ✅               | ✅                  |
+| Race Conditions   | ✅               | ✅                  |
+| GraphQL           | ✅               | ✅                  |
+
+---
+
+# Installation
+
+## Clone Repository
+
+```bash id="j3hn9r"
 git clone https://github.com/YOUR_USERNAME/BugHunter-AI-Elite.git
 cd BugHunter-AI-Elite
 ```
 
-**Install requirements:**
-```bash
+## Install Requirements
+
+```bash id="n2nqdb"
 pip install -r requirements.txt
 ```
 
 ---
 
-## Usage
+# Usage
 
-**Basic scan:**
-```bash
+## Basic Scan
+
+```bash id="3jzjht"
 python bughunter.py https://target.com
 ```
 
-**Bug bounty safe mode (recommended for BB programs):**
-```bash
+## Bug Bounty Safe Mode
+
+```bash id="grzx3k"
 python bughunter.py https://target.com --bb-mode
 ```
 
-**Full scan:**
-```bash
+## Full Scan
+
+```bash id="zvk4w8"
 python bughunter.py https://target.com --full-scan
 ```
 
-**Single module:**
-```bash
+## Single Module Execution
+
+```bash id="5drhj8"
 python bughunter.py https://target.com --xss
 python bughunter.py https://target.com --sqli
 python bughunter.py https://target.com --ssrf
 ```
 
-**Aggressive mode (controlled environments only):**
-```bash
+## Aggressive Mode
+
+```bash id="6x2dvw"
 python bughunter.py https://target.com --aggressive
 ```
 
-**Lab mode (unrestricted, local labs only):**
-```bash
+## Local Lab Testing
+
+```bash id="5v0rjw"
 python bughunter.py https://target.com --lab-mode
 ```
 
-**Verbose logging:**
-```bash
+## Verbose Logging
+
+```bash id="x0p6tz"
 python bughunter.py https://target.com --verbose
 ```
 
 ---
 
-## Execution Modes
+# Execution Modes
 
-| Mode | Purpose | Payloads | Throttling | Concurrency |
-|------|---------|----------|------------|-------------|
-| `bb-mode` | Safe bug bounty testing | Safe only | Controlled | Reduced |
-| `aggressive` | Advanced controlled testing | Advanced | Moderate | Higher |
-| `lab-mode` | Educational/lab testing | Full access | None | Unrestricted |
-
----
-
-## Confidence Engine
-
-BugHunter AI Elite uses multi-signal validation to drastically reduce false positives. The engine analyzes:
-
-- Reflection type and execution context
-- Validator agreement across signals
-- Payload effectiveness history
-- Response anomalies and context compatibility
-
-| Level | Meaning |
-|-------|---------|
-| `informational` | Low confidence, needs manual review |
-| `weak` | Possible issue, investigate further |
-| `moderate` | Likely vulnerability |
-| `strong` | High confidence finding |
-| `verified` | Confirmed issue with evidence |
+| Mode         | Purpose                     | Payload Policy      | Concurrency  |
+| ------------ | --------------------------- | ------------------- | ------------ |
+| `bb-mode`    | Safe bug bounty testing     | Safe payloads only  | Reduced      |
+| `aggressive` | Advanced controlled testing | Advanced payloads   | Higher       |
+| `lab-mode`   | Local/lab experimentation   | Full payload access | Unrestricted |
 
 ---
 
-## Observability
+# Confidence Engine
 
-Every scan produces structured, traceable logs:
+BugHunter AI Elite uses multi-signal validation to reduce false positives.
 
-```json
+The framework analyzes:
+
+* Reflection type
+* Execution context
+* Validator agreement
+* Payload effectiveness history
+* Response anomalies
+* Context compatibility
+
+## Confidence Levels
+
+| Level           | Meaning                                  |
+| --------------- | ---------------------------------------- |
+| `informational` | Low confidence, requires manual review   |
+| `weak`          | Possible issue                           |
+| `moderate`      | Likely vulnerability                     |
+| `strong`        | High confidence finding                  |
+| `verified`      | Confirmed issue with supporting evidence |
+
+---
+
+# Observability
+
+Every scan produces structured and traceable logs.
+
+```json id="5aw5fc"
 {
   "scan_id": "SCAN-00001",
   "request_id": "REQ-000245",
@@ -214,101 +342,144 @@ Every scan produces structured, traceable logs:
 }
 ```
 
-Features:
-- Scan IDs, Request IDs, Correlation IDs
-- Full payload execution tracing
-- Retry and resilience event tracking
-- Performance metrics per module
+## Observability Features
+
+* Scan IDs, Request IDs, Correlation IDs
+* Payload execution tracing
+* Retry and resilience tracking
+* Performance metrics
+* Structured JSON logging
+* Scan lifecycle visibility
 
 ---
 
-## Reporting
+# Reporting
 
 Supported output formats:
 
-- **JSON** — machine-readable, full evidence included
-- **Markdown** — human-readable, shareable reports
-- **Terminal summary** — quick triage view
+* JSON
+* Markdown
+* Terminal summaries
 
-Every report includes:
-- CWE mapping per finding
-- Payload lineage and traceability
-- Execution timeline
-- Remediation guidance
-- Confidence scoring per finding
+Each report includes:
 
----
-
-## Resilience Engineering
-
-The framework is built to handle real-world hostile conditions:
-
-- Circuit breaker support for unresponsive targets
-- WAF throttling detection with adaptive backoff
-- Timeout storm handling
-- Concurrency saturation management
-- Operational degradation detection
-- Automatic retry with exponential backoff
+* CWE mapping
+* Evidence tracking
+* Payload lineage
+* Execution timelines
+* Remediation guidance
+* Confidence scoring
 
 ---
 
-## Framework Philosophy
+# Resilience Engineering
 
-BugHunter AI Elite was designed around one core principle: **governance-first architecture**.
+The framework includes resilience-focused operational controls:
 
-The framework intentionally prioritizes:
-
-- **Reliability** over speed
-- **Validation quality** over payload volume
-- **Architectural stability** over feature creep
-- **Observability** over black-box execution
-- **False-positive reduction** over coverage maximization
-
-This makes it suitable for professional bug bounty workflows where report quality and accuracy directly determine payout and reputation.
+* Circuit breaker support
+* Adaptive backoff handling
+* Timeout storm management
+* WAF throttling detection
+* Concurrency saturation monitoring
+* Retry governance and recovery handling
 
 ---
 
-## Current Status
+# Human-Guided Security Testing
 
-| Component | Status |
-|-----------|--------|
-| Payload Architecture | ✅ Complete |
-| Execution Governance | ✅ Complete |
-| Module Routing | ✅ Complete |
-| Mode Governance | ✅ Complete |
-| RAG Brain Integration | ✅ Complete |
-| Observability | ✅ Complete |
-| Resilience Engineering | ✅ Complete |
-| Confidence Engine | ✅ Complete |
-| Reporting System | ✅ Complete |
-| Field Testing | 🔄 Active |
-| Qwen AI Integration | 🗺️ Roadmap |
+BugHunter AI Elite is designed as a human-guided offensive security framework.
 
----
+The framework intentionally emphasizes:
 
-## Roadmap
+* deterministic orchestration
+* governed execution
+* analyst-driven validation
+* explainable findings
+* controlled testing workflows
 
-- Qwen 3B AI co-pilot integration (explain findings in plain English)
-- Dashboard UI for scan results
-- Extended WAF bypass heuristics
-- Per-program learning memory
-- HackerOne/Bugcrowd report auto-draft generation
+rather than fully autonomous exploitation behavior.
+
+Human oversight remains central to all testing decisions and vulnerability verification workflows.
 
 ---
 
-## Author
+# Framework Philosophy
+
+BugHunter AI Elite was designed around governance-first architecture.
+
+The framework prioritizes:
+
+* reliability over speed
+* validation quality over payload volume
+* architectural stability over feature accumulation
+* observability over black-box execution
+* false-positive reduction over noisy coverage
+
+This makes the framework suitable for professional bug bounty workflows where validation quality and reporting accuracy matter significantly.
+
+---
+
+# Current Status
+
+| Component                    | Status     |
+| ---------------------------- | ---------- |
+| Payload Architecture         | ✅ Complete |
+| Execution Governance         | ✅ Complete |
+| Module Routing               | ✅ Complete |
+| Mode Governance              | ✅ Complete |
+| Observability                | ✅ Complete |
+| Resilience Engineering       | ✅ Complete |
+| Confidence Engine            | ✅ Complete |
+| Reporting System             | ✅ Complete |
+| Field Testing                | 🔄 Active  |
+| Continued Operational Tuning | 🔄 Active  |
+
+The framework has reached a mature architectural and operational foundation stage and is currently undergoing continued real-world testing and refinement.
+
+---
+
+# Roadmap
+
+Planned future improvements may include:
+
+* Dashboard UI for scan analytics
+* Enhanced response-analysis heuristics
+* Extended reporting workflows
+* Performance optimization
+* Additional validation improvements
+
+The framework intentionally avoids unsafe autonomous exploitation behavior.
+
+---
+
+# Author
 
 **Kishan**
 Offensive Security Engineer | Bug Bounty Hunter | Framework Developer
 
-Built BugHunter AI Elite as a long-term offensive security engineering project focused on architecture discipline, modular design, and real-world bug bounty effectiveness.
+Built BugHunter AI Elite as a long-term offensive security engineering project focused on:
+
+* architecture discipline
+* modular design
+* execution governance
+* resilience engineering
+* observability
+* validation quality
+
+---
+# Public Release Notice
+
+This repository contains the public and sanitized edition of BugHunter AI Elite intended for educational research, authorized security testing, and architectural demonstration purposes.
+
+Some experimental, high-risk, or lab-specific components may be excluded from the public release to promote responsible usage and safer operational practices.
+
+For research collaboration, academic discussion, or architecture-related inquiries, please contact the repository owner.
+
+---
+# License
+
+This project is licensed under the MIT License. See the `LICENSE` file for details.
 
 ---
 
-## License
-
-MIT License — see `LICENSE` file for details.
-
----
-
-*Built with architectural discipline. Tested with real-world intent.*
+*Built with architectural discipline and operational security research principles.*
