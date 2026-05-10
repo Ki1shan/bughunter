@@ -231,7 +231,7 @@ BugHunter AI Elite
 ## Clone Repository
 
 ```bash id="j3hn9r"
-git clone https://github.com/YOUR_USERNAME/BugHunter-AI-Elite.git
+git clone https://github.com/Ki1shan/BugHunter-AI-Elite.git
 cd BugHunter-AI-Elite
 ```
 
