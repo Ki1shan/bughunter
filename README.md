@@ -47,6 +47,11 @@ Unlike traditional scanners that rely on static payload dumping, BugHunter AI El
 
 ---
 
+## Images 
+<img width="1400" height="786" alt="image" src="https://github.com/user-attachments/assets/d867843b-ef6d-4bdd-a2cd-c68b349ad4f9" />
+<img width="1400" height="804" alt="image" src="https://github.com/user-attachments/assets/3a95c000-99c5-4a2c-b4a6-9c6556aa3408" />
+
+---
 # High-Level Workflow
 
 ```text id="y1dy71"
